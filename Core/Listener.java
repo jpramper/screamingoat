@@ -58,14 +58,41 @@ public class Listener implements Runnable {
 			
 			case 1: //msg
 				if(destType == 1){ //receive msg and send it to the correct one
-				
-				} else if(destType == 0){ // you got mail.
+					String sender = "";
+					for(User usr : Server.active){
+						if(usr.ip.equals(address)){
+							sender = usr.nickname;
+						}
+					}
 					
+					String[] datas = new String[2];
+					datas = Server.privateMessage(pkg.data);
+					
+					String person = Server.returnPerson(datas[0], sender);
+					if( person == null){
+						//no existe
+					}else if (person.equals("banned")){
+						// usuario bloqueado.
+					}else{
+						setupMsg(1, sender+": " + datas[1], person, 0);
+					}
+					
+				} else if(destType == 0){ // you got mail.!!
+					//print it
 				}
 				break;
 				
 			case 2:	//boadcast	
 				if(destType == 1){ //receive msg and broadcast it
+					
+					String sender = "";
+					for(User usr : Server.active){
+						if(usr.ip.equals(address)){
+							sender = usr.nickname;
+						}
+					}
+					brodcast(2, sender + ": " + pkg.data , 0,sender);
+					
 					
 				} else if(destType == 0){ // you got a public mail.
 					
@@ -74,8 +101,8 @@ public class Listener implements Runnable {
 				
 				
 			case 3: //login	
-				if(destType == 1){ //receive loggin request
 				
+				if(destType == 1){ //receive loggin request
 					String[] dtalgin = Parsers.parseSignLogin(pkg.data);
 					int ret = Server.logginUser(dtalgin[0], dtalgin[1]);
 					
@@ -100,6 +127,7 @@ public class Listener implements Runnable {
 					case 0:
 						//success loggin in
 						//send syincClocks routine
+						syncClocks();
 						break;
 					case 1:
 						//incorrect name
@@ -119,11 +147,23 @@ public class Listener implements Runnable {
 				
 			//shareReq	
 			case 4:
-				setupMsg(5, Server.actives(), address,0);
+				if(destType == 1){ //receive request of share active users
+					setupMsg(4, Server.actives(), address,0);
+				} else if(destType == 0){ // receive active users
+					// pkg.data contains a concat string of the active users
+					//pkg.data
+					//
+				}
 				break;
 				
-			//shareRsp  who is active ?	
+				
+			//bann list?	data = nickname of the banned
 			case 5:
+				if(destType == 1){ //receive request to bann a person
+					Server.banPerson(pkg.data ,address);
+				} else if(destType == 0){ // ... do nothing
+					
+				}
 				break;
 				
 			//ack	
@@ -149,11 +189,28 @@ public class Listener implements Runnable {
 			case 10:
 				String[] dtasgnin = Parsers.parseSignLogin(pkg.data);
 				
-				if(Server.createUser(dtasgnin[0], address ,dtasgnin[1]))
-					setupMsg(6, "", address,0); //success sign in
-				else
-					setupMsg(8, "", address,0); //name already taken
+				if(destType == 1){ //sign in request
+					if(Server.createUser(dtasgnin[0], address ,dtasgnin[1]))
+						setupMsg(10, "0", address,0); //success sign in
+					else
+						setupMsg(10, "1", address,0); //name already taken
+					
+					
+				} else if(destType == 0){ // answer from server
+					switch (Integer.parseInt(pkg.data)){
+					case 0:
+						//success loggin in
+						break;
+					case 1:
+						//name taken
+						break;
+						
+					default:
+						break;
+					}
+				}
 				break;
+				
 				
 			//time	comm
 			case 11:
@@ -165,12 +222,14 @@ public class Listener implements Runnable {
 						for (User usr : Server.active) {
 							setupMsg(12, usr.deltatime+"", usr.ip, 0);
 						}
+						Server.endActClock();
 					}
 				}else if (destType == 0){ // Client mode (send my timestamp)
 					String time = Client.getTime();
 					setupMsg(11,time,Global.serverIp.toString(),1);
 				}
 				
+			//time setup	
 			case 12:
 				if(destType == 1){ //server ... do nothing
 					
@@ -217,7 +276,7 @@ public class Listener implements Runnable {
 		return;
 	}
 	
-	public void brodcast(int type, String data) {
+	public void brodcast(int type, String data, int destType, String sender) {
 		
 		DataPacket p = new DataPacket();
 		p.dataType = type;
@@ -226,6 +285,8 @@ public class Listener implements Runnable {
 		DatagramPacket sendPacket = null;
 		
 		for (User usr : Server.active) {
+			if(usr.banneds.contains(sender)) continue; //skip banned persons
+			
 			sendPacket = null;
 			
 			try {
@@ -242,8 +303,7 @@ public class Listener implements Runnable {
 	}
 	
 	public String syncClocks(){
-		brodcast(11,"");
-		
+		brodcast(11,"",0,"");
 		return "";
 	}
 	

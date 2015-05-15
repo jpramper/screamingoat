@@ -120,7 +120,7 @@ public class Server {
 		secs /= 60; //get minutes
 		secs /= 60; //get hours
 		
-		int[] promtime = new int[2]; 
+		int[] promtime = new int[3]; 
 		
 		promtime[0] = (int)secs;// subtract hours
 		
@@ -141,12 +141,44 @@ public class Server {
 	}
 	
 	
-	public static boolean endActClock(Date date, String ip){
+	public static boolean endActClock(){
 		
 		for (User usr : active) {
 				usr.actClock = false;
 		}
 		return true;
+	}
+	
+	public static void banPerson(String nickname, String address){
+		for (User usr : active) {
+			if(usr.ip.equals(address)){
+				usr.banneds.add(nickname);
+			}
+		}
+	}
+	
+	public static String returnPerson(String name, String sender){
+		
+		
+		for (User usr : active) {
+			if(usr.nickname.equals(name)){
+				if(usr.banneds.contains(sender)){
+					return "banned";
+				}
+				return usr.ip;
+			}
+		}
+		return null;
+	}
+	
+	public static String[] privateMessage(String data){
+		String[] datas = new String[2];
+		datas = Parsers.parsePrivateMessage(data);
+		datas[0].replaceAll("@", "");
+		//get destinatarium
+		//write mssg
+		return datas;
+		
 	}
 	
 }

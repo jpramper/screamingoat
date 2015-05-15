@@ -1,5 +1,6 @@
 package Actions;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class User {
@@ -10,6 +11,7 @@ public class User {
 	public float secstimestamp;
 	public float deltatime;
 	public boolean actClock;
+	public static ArrayList<String> banneds = new ArrayList<String>();
 	
 	User(String name, String ip, String password){
 		nickname = name;

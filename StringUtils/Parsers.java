@@ -15,5 +15,12 @@ public class Parsers {
 		
 		return dta;
 	}
+	
+	public static String[] parsePrivateMessage(String data){
+		String[] dta = new String[2];
+		dta = data.split("¬|¬");
+		
+		return dta;
+	}
 
 }
