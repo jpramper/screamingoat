@@ -25,7 +25,7 @@ public class Global {
 	// listener
 	public static Listener listener = null;
 	public static boolean isServer = false;
-	public static boolean isListening = false;
+	public static boolean isListening = false; // TODO cambiar en server
 
 	// client's socket
 	public static DatagramSocket socket = null;
@@ -49,10 +49,10 @@ public class Global {
 		}
 	}
 	
-	public void startListener() {
+	public void iniciaServidor() {
 		// create the server listener to react to communications
 		try{
-	    	listener = new Server();
+	    	listener = new Listener();
 			Thread t = new Thread(listener);
 			t.start();
 	    } catch (Exception e) {
