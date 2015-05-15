@@ -1,7 +1,7 @@
 package Actions;
+
 import StringUtils.Parsers;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Server {
 	public static ArrayList<User> active = new ArrayList<User>();
@@ -152,7 +152,7 @@ public class Server {
 	public static void banPerson(String nickname, String address){
 		for (User usr : active) {
 			if(usr.ip.equals(address)){
-				usr.banneds.add(nickname);
+				User.banneds.add(nickname);
 			}
 		}
 	}
@@ -162,7 +162,7 @@ public class Server {
 		
 		for (User usr : active) {
 			if(usr.nickname.equals(name)){
-				if(usr.banneds.contains(sender)){
+				if(User.banneds.contains(sender)){
 					return "banned";
 				}
 				return usr.ip;

@@ -1,7 +1,6 @@
 package Actions;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class User {
 	public String nickname;

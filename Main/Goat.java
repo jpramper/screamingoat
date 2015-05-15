@@ -1,7 +1,6 @@
 package Main;
 
 import java.net.DatagramPacket;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import Core.DataPacket;
@@ -24,6 +23,7 @@ public class Goat {
 		// create and present the login window
 		Login login = Login.getInstance();
 		login.setVisible(true);
+		login.txtUser.requestFocusInWindow();
 	}
 	
 	public static void searchServer() {

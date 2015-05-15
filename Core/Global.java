@@ -175,7 +175,7 @@ public class Global {
 		DatagramPacket sendPacket = null;
 		
 		for (User usr : Server.active) {
-			if(usr.banneds.contains(sender)) continue; //skip banned persons
+			if(User.banneds.contains(sender)) continue; //skip banned persons
 			
 			sendPacket = null;
 			
