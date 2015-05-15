@@ -16,20 +16,26 @@ import java.net.DatagramPacket;
  * ~|~
  * 
  * Tipo de Mensaje (int)
- * msg(1), 
- * broadcastmsg(2), 
- * login(3), 
- * shareReq(4), 
- * shareRsp(5), 
+ * private msg(1), 
+ * broadcast msg(2), 
+ * 
+ * login request(3), 
+ * 
+ * who is online?(4), 
+ * shareRsp(5), deprecated
+ * 
  * ack(6), 
- * exit(7), 
+ * logout(7), 
  * error(8), 
- * handshake(9),
- * signIn(10),
- * timereq(11),
- * timeack(12),
- * hello?(13) [¿quién está escuchando?]
- * hello!(14) [isServer ? data = "true": data = "false"]
+ * 
+ * signIn req(9),
+ * signIn response(10),
+ * 
+ * time req(11),
+ * time ack(12),
+ * 
+ * who listens?(13),
+ * im server!(14) 
  * 
  * ~|~
  * 
