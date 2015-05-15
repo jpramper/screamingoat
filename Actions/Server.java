@@ -88,11 +88,12 @@ public class Server {
 		return true;
 	}
 	
-	public static boolean berkley(){
+	public static void berkley(){
 		float totalsecs = 0;
 		float secs;
 		int n = 0;
 		String[] dta = new String[2];
+		//get prom in secs
 		for (User usr : active) {
 			n ++;
 			secs = 0;
@@ -102,30 +103,41 @@ public class Server {
 			secs *= 60;
 			secs += Integer.parseInt(dta[2]);
 			
+			usr.secstimestamp = secs;
 			totalsecs += secs;
 		}
 		
 		float prom = totalsecs / n;
 		
+		for (User usr : active) {
+			usr.deltatime = prom - usr.secstimestamp;
+		}
+	}
+	
+	public static String secsToTime(float secs){
+		//get prom in time
 		
-		prom /= 60; //get minutes
-		prom /= 60; //get hours
+		secs /= 60; //get minutes
+		secs /= 60; //get hours
 		
 		int[] promtime = new int[2]; 
 		
-		promtime[0] = (int)prom;// subtract hours
+		promtime[0] = (int)secs;// subtract hours
 		
-		prom -= promtime[0];
+		secs -= promtime[0];
 		
-		prom *= 60;
+		secs *= 60;
 		
-		promtime[1] = (int)prom; // substract mins
+		promtime[1] = (int)secs; // substract mins
 		
-		prom -= promtime[1];
+		secs -= promtime[1];
 		
+		secs *= 60;
 		
-		
-		return true;
+		promtime[2] = (int)secs;
+		String Stime = "";
+		Stime.concat(promtime[2]+":"+promtime[1]+":"+promtime[0]);
+		return Stime;
 	}
 	
 	

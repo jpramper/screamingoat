@@ -17,11 +17,8 @@ import java.util.Calendar;
 
 public class Listener implements Runnable {
 	
-	Listener() {
-	  Global.isListening = true;
-	}
-	
 	public void run(){
+		Global.isListening = true;
 		DatagramPacket receivePacket;
 		byte[] receiveData;
 
@@ -125,12 +122,16 @@ public class Listener implements Runnable {
 					setupMsg(8, "", address,0); //name already taken
 				break;
 				
-			//time	
+			//time	comm
 			case 11:
 				if(destType == 1){ //server mode (receive time and process it)
 					Server.saveDate(pkg.data,address);
 					if(Server.checkifLastTIme()){
 						
+						Server.berkley();
+						for (User usr : Server.active) {
+							setupMsg(12, usr.deltatime+"", usr.ip, 0);
+						}
 					}
 				}else if (destType == 0){ // Client mode (send my timestamp)
 					String time = Client.getTime();
