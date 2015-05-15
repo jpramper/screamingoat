@@ -8,6 +8,7 @@ import Actions.Client;
 import Actions.Server;
 import Actions.User;
 import StringUtils.Parsers;
+import UserInterface.Login;
 
 
 public class MessageListener implements Runnable {
@@ -47,6 +48,7 @@ public class MessageListener implements Runnable {
 	public void processMsg(DataPacket pkg, String address) {
 		//parse pkg
 		int destType = pkg.destType;
+		pkg.data = pkg.data.trim();
 		
 		switch (pkg.dataType) {
 			
@@ -68,7 +70,7 @@ public class MessageListener implements Runnable {
 					}else if (person.equals("banned")){
 						// usuario bloqueado.
 					}else{
-						setupMsg(1, sender+": " + datas[1], person, 0);
+						Global.sendMessage(1, sender+": " + datas[1], person, 0, Global.messagingSocket);
 					}
 					
 				} else if(destType == 0){ // you got mail.!!
@@ -85,7 +87,7 @@ public class MessageListener implements Runnable {
 							sender = usr.nickname;
 						}
 					}
-					brodcast(2, sender + ": " + pkg.data , 0,sender);
+					Global.sendBroadcast(2, sender + ": " + pkg.data , 0,sender, Global.messagingSocket);
 					
 					
 				} else if(destType == 0){ // you got a public mail.
@@ -102,14 +104,14 @@ public class MessageListener implements Runnable {
 					
 					switch (ret){
 						case 0:
-							setupMsg(3, "0", address,0); //success loggin in
+							Global.sendMessage(3, "0", address,0, Global.messagingSocket); //success loggin in
 							syncClocks();
 							break;
 						case 1:
-							setupMsg(3, "1", address,0); //incorrect name
+							Global.sendMessage(3, "1", address,0, Global.messagingSocket); //incorrect name
 							break;
 						case 2:
-							setupMsg(3, "2", address,0); //incorrect password
+							Global.sendMessage(3, "2", address,0, Global.messagingSocket); //incorrect password
 							break;
 						default:
 							break;
@@ -142,7 +144,7 @@ public class MessageListener implements Runnable {
 			//shareReq	
 			case 4:
 				if(destType == 1){ //receive request of share active users
-					setupMsg(4, Server.actives(), address,0);
+					Global.sendMessage(4, Server.actives(), address,0, Global.messagingSocket);
 				} else if(destType == 0){ // receive active users
 					// pkg.data contains a concat string of the active users
 					//pkg.data
@@ -167,7 +169,7 @@ public class MessageListener implements Runnable {
 			//exit	
 			case 7:
 				Server.removeActiveUser(address);
-				setupMsg(6, "", address,0);
+				Global.sendMessage(6, "", address,0, Global.messagingSocket);
 				break;
 				
 			//error	
@@ -176,7 +178,7 @@ public class MessageListener implements Runnable {
 				
 			//handshake
 			case 9:
-				setupMsg(9, "", address,0);
+				Global.sendMessage(9, "", address,0, Global.messagingSocket);
 				break;
 				
 			//sign in
@@ -185,21 +187,27 @@ public class MessageListener implements Runnable {
 				
 				if(destType == 1){ //sign in request
 					if(Server.createUser(dtasgnin[0], address ,dtasgnin[1]))
-						setupMsg(10, "0", address,0); //success sign in
+						Global.sendMessage(10, "0", address,0, Global.messagingSocket); //success sign in
 					else
-						setupMsg(10, "1", address,0); //name already taken
+						Global.sendMessage(10, "1", address,0, Global.messagingSocket); //name already taken
 					
 					
 				} else if(destType == 0){ // answer from server
+					Login loginWindow = Login.getInstance();
+					System.out.println(pkg.data.length());
 					switch (Integer.parseInt(pkg.data)){
+					
 					case 0:
 						//success loggin in
+						loginWindow.lblLblsucc.setText("si te metiste chido");
 						break;
 					case 1:
 						//name taken
+						loginWindow.lblError.setText("compilla tu nombre esta bien usado");
 						break;
 						
 					default:
+						System.out.println("no junca");
 						break;
 					}
 				}
@@ -214,13 +222,13 @@ public class MessageListener implements Runnable {
 						
 						Server.berkley();
 						for (User usr : Server.active) {
-							setupMsg(12, usr.deltatime+"", usr.ip, 0);
+							Global.sendMessage(12, usr.deltatime+"", usr.ip, 0, Global.messagingSocket);
 						}
 						Server.endActClock();
 					}
 				}else if (destType == 0){ // Client mode (send my timestamp)
 					String time = Client.getTime();
-					setupMsg(11,time,Global.serverIp.toString(),1);
+					Global.sendMessage(11,time,Global.serverIp.toString(),1, Global.messagingSocket);
 				}
 				
 			//time setup	
@@ -239,65 +247,8 @@ public class MessageListener implements Runnable {
 		}
 	}
 	
-	public void setupMsg(int type, String data, String destiny, int destType) {
-		
-		DataPacket p = new DataPacket();
-		p.dataType = type;
-		p.data = data;
-		p.serverIp = Global.serverIp.toString();
-		
-		DatagramPacket sendPacket = null;
-		try {
-			// create a UDP packet with the data packet
-			sendPacket = new DatagramPacket(
-					p.toString().getBytes(), 
-					p.toString().length(), 
-					InetAddress.getByName(destiny), 
-					Global.messagingPort);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
-
-		// send the login packet
-	    try {
-			Global.messagingSocket.send(sendPacket);
-			System.out.println("se envió");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return;
-	}
-	
-	public void brodcast(int type, String data, int destType, String sender) {
-		
-		DataPacket p = new DataPacket();
-		p.dataType = type;
-		p.data = data;
-		p.serverIp = Global.serverIp.toString();
-		DatagramPacket sendPacket = null;
-		
-		for (User usr : Server.active) {
-			if(usr.banneds.contains(sender)) continue; //skip banned persons
-			
-			sendPacket = null;
-			
-			try {
-				// create a UDP packet with the data packet
-				sendPacket = new DatagramPacket(
-						p.toString().getBytes(), 
-						p.toString().length(), 
-						InetAddress.getByName(usr.ip), 
-						Global.messagingPort);
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	public String syncClocks(){
-		brodcast(11,"",0,"");
+		Global.sendBroadcast(11,"",0,"", Global.messagingSocket);
 		return "";
 	}
 	

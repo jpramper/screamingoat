@@ -36,8 +36,8 @@ public class ConnectionListener implements Runnable {
 	    		if (Global.DEBUG) 
 	        		System.out.println("ConnectionListener.run()| " + 
 	        	"received message. type " + pkg.dataType);
-	    		System.out.println(pkg.destType);
-	    		processMsg(pkg, address);
+	    		
+	    		processMsg(pkg, address.replace("/", ""));
 	    	}
 	    	catch (Exception e) {
 				e.printStackTrace();

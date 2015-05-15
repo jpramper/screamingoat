@@ -71,31 +71,27 @@ public class DataPacket {
 	public String toString() {
 		return 
 				destType +
-				"°" + 
+				"~~" + 
 				serverIp + 
-				"°" + 
+				"~~" + 
 				dataType + 
-				"°" + 
+				"~~" + 
 				data;
 	}
 	
 	public static DataPacket parseDataPacket(DatagramPacket udpPacket) {
 		DataPacket p = new DataPacket();
 		String xml = new String(udpPacket.getData());
-		System.out.println("qwer" + xml);
+
 		// split the XML in parts
-		String[] xmlParts = xml.split("°");
-		System.out.println("parte 0" + xmlParts[0]);
-		System.out.println("parte 1" + xmlParts[1]);
-		System.out.println("parte 2" + xmlParts[2]);
-		System.out.println("parte 3" + xmlParts[3]);
+		String[] xmlParts = xml.split("~~");
+		
 		try {
 			// parse the halves
 			p.destType = Integer.parseInt(xmlParts[0]);
 			p.serverIp = xmlParts[1];
 			p.dataType = Integer.parseInt(xmlParts[2]);
 			p.data = xmlParts[3];
-			System.out.println("asdf" + p.dataType);
 		} catch (Exception e) {
 			p.init(); // set invalid packet
 			System.out.println(e + p.toString());

@@ -6,6 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
+import Core.Global;
+
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -23,11 +25,20 @@ public class Login extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private JPanel contentPane;
-	private JTextField txtUser;
-	private JTextField txtPass;
+	public JPanel contentPane;
+	public JTextField txtUser;
+	public JTextField txtPass;
+	public JLabel lblError;
+	public JLabel lblLblsucc;
 	
 	public void signIn() {
+		// mando al servidor, tipo 10, username~password
+		Global.sendMessage(
+				10, 
+				txtUser.getText().toString() + "~" + txtPass.getText().toString(), 
+				Global.serverIp.toString(), 
+				1, 
+				Global.messagingSocket);
 		
 	}
 	
@@ -82,9 +93,14 @@ public class Login extends JFrame {
 		btnLogin.setBounds(199, 221, 117, 25);
 		contentPane.add(btnLogin);
 		
-		JLabel lblError = new JLabel("Error");
+		lblError = new JLabel("Error");
 		lblError.setForeground(Color.RED);
 		lblError.setBounds(56, 183, 70, 15);
 		contentPane.add(lblError);
+		
+		lblLblsucc = new JLabel("lblSucc");
+		lblLblsucc.setForeground(Color.GREEN);
+		lblLblsucc.setBounds(56, 162, 70, 15);
+		contentPane.add(lblLblsucc);
 	}
 }

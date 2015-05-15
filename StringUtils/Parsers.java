@@ -4,7 +4,7 @@ public class Parsers {
 	
 	public static String[] parseSignLogin(String Data) {
 		String[] dta = new String[2];
-		dta = Data.split("¬|¬");
+		dta = Data.split("~");
 		
 		return dta;
 	}
@@ -18,7 +18,7 @@ public class Parsers {
 	
 	public static String[] parsePrivateMessage(String data){
 		String[] dta = new String[2];
-		dta = data.split("¬|¬");
+		dta = data.split("~");
 		
 		return dta;
 	}

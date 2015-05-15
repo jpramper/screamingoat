@@ -1,9 +1,13 @@
 package Core;
 
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+
+import Actions.Server;
+import Actions.User;
 
 /**
  * Application-wide variable container class.
@@ -113,6 +117,90 @@ public class Global {
 	    } catch (Exception e) {
 	        System.out.println(e);
 	    }
+	}
+	
+	public static void sendMessage(
+			int type, 
+			String data, 
+			String destiny, 
+			int destType,
+			DatagramSocket socket) {
+		
+		if(destiny.contains("/")) destiny = destiny.replace("/", ""); //   avoid /
+		
+		DataPacket p = new DataPacket();
+		p.dataType = type;
+		p.data = data;
+		p.destType = destType;
+		p.serverIp = Global.serverIp.toString();
+		
+		DatagramPacket sendPacket = null;
+		try {
+			// create a UDP packet with the data packet
+			sendPacket = new DatagramPacket(
+					p.toString().getBytes(), 
+					p.toString().length(), 
+					InetAddress.getByName(destiny), 
+					Global.messagingPort);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+		// send the packet
+	    try {
+			socket.send(sendPacket);
+			
+			if (Global.DEBUG) 
+	    		System.out.println("Global.sendMessage()| " + 
+			"Se envió mensaje: " + p);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return;
+	}
+	
+	public static void sendBroadcast(
+			int type, 
+			String data, 
+			int destType, 
+			String sender, 
+			DatagramSocket socket) {
+		
+		DataPacket p = new DataPacket();
+		p.dataType = type;
+		p.data = data;
+		p.destType = destType;
+		p.serverIp = Global.serverIp.toString();
+		DatagramPacket sendPacket = null;
+		
+		for (User usr : Server.active) {
+			if(usr.banneds.contains(sender)) continue; //skip banned persons
+			
+			sendPacket = null;
+			
+			try {
+				// create a UDP packet with the data packet
+				sendPacket = new DatagramPacket(
+						p.toString().getBytes(), 
+						p.toString().length(), 
+						InetAddress.getByName(usr.ip), 
+						Global.messagingPort);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+			
+			// send the packet
+		    try {
+				socket.send(sendPacket);
+				
+				if (Global.DEBUG) 
+		    		System.out.println("Global.sendBroadcast()| " + 
+				"Se envió broadcast: " + p);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

@@ -40,7 +40,7 @@ public class Goat {
 				p.toString().length(), 
 				Global.broadcastIp, // send to anyone
 				Global.discoveryPort); // use discovery port
-		System.out.println(p.dataType);
+
 		// send the hello packet
 	    try {
 	    	Global.discoverySocket.send(sendPacket);
