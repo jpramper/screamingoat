@@ -29,7 +29,7 @@ public class Login extends JFrame {
 	public JTextField txtUser;
 	public JTextField txtPass;
 	public JLabel lblError;
-	public JLabel lblLblsucc;
+	public JLabel lblSuccess;
 	
 	public void signIn() {
 		// mando al servidor, tipo 10, username~password
@@ -51,27 +51,27 @@ public class Login extends JFrame {
 	 */
 	private Login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 335, 221);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblUser = new JLabel("User");
-		lblUser.setBounds(39, 82, 70, 15);
+		JLabel lblUser = new JLabel("Username");
+		lblUser.setBounds(12, 12, 97, 15);
 		contentPane.add(lblUser);
 		
-		JLabel lblPass = new JLabel("Pass");
-		lblPass.setBounds(39, 135, 70, 15);
+		JLabel lblPass = new JLabel("Password");
+		lblPass.setBounds(12, 56, 70, 15);
 		contentPane.add(lblPass);
 		
 		txtUser = new JTextField();
-		txtUser.setBounds(132, 80, 114, 19);
+		txtUser.setBounds(110, 10, 189, 19);
 		contentPane.add(txtUser);
 		txtUser.setColumns(10);
 		
 		txtPass = new JTextField();
-		txtPass.setBounds(132, 133, 114, 19);
+		txtPass.setBounds(110, 54, 189, 19);
 		contentPane.add(txtPass);
 		txtPass.setColumns(10);
 		
@@ -81,7 +81,7 @@ public class Login extends JFrame {
 				signIn();
 			}
 		});
-		btnSignin.setBounds(39, 221, 117, 25);
+		btnSignin.setBounds(36, 146, 117, 25);
 		contentPane.add(btnSignin);
 		
 		JButton btnLogin = new JButton("Login");
@@ -90,17 +90,17 @@ public class Login extends JFrame {
 				logIn();
 			}
 		});
-		btnLogin.setBounds(199, 221, 117, 25);
+		btnLogin.setBounds(182, 146, 117, 25);
 		contentPane.add(btnLogin);
 		
-		lblError = new JLabel("Error");
+		lblError = new JLabel("");
 		lblError.setForeground(Color.RED);
-		lblError.setBounds(56, 183, 70, 15);
+		lblError.setBounds(12, 119, 304, 15);
 		contentPane.add(lblError);
 		
-		lblLblsucc = new JLabel("lblSucc");
-		lblLblsucc.setForeground(Color.GREEN);
-		lblLblsucc.setBounds(56, 162, 70, 15);
-		contentPane.add(lblLblsucc);
+		lblSuccess = new JLabel("");
+		lblSuccess.setForeground(Color.GREEN);
+		lblSuccess.setBounds(12, 92, 304, 15);
+		contentPane.add(lblSuccess);
 	}
 }

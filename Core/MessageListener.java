@@ -120,8 +120,8 @@ public class MessageListener implements Runnable {
 					switch (Integer.parseInt(pkg.data)){
 					
 					case 0:
-						loginWindow.lblLblsucc.setText("loggeandote");
-						loginWindow.lblLblsucc.setText("sincronizando reloj con berkley");
+						loginWindow.lblSuccess.setText("loggeandote");
+						loginWindow.lblSuccess.setText("sincronizando reloj con berkley");
 						//success loggin in
 						//send syincClocks routine
 						syncClocks();
@@ -202,7 +202,7 @@ public class MessageListener implements Runnable {
 					
 					case 0:
 						//success loggin in
-						loginWindow.lblLblsucc.setText("si te metiste chido");
+						loginWindow.lblSuccess.setText("si te metiste chido");
 						break;
 					case 1:
 						//name taken

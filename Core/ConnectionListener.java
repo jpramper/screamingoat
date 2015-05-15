@@ -47,6 +47,9 @@ public class ConnectionListener implements Runnable {
 	}
 	
 	public void processMsg(DataPacket pkg, String address) {
+
+		pkg.data = pkg.data.trim();
+		
 		switch (pkg.dataType) {
 			
 			case 13: // who listens?
