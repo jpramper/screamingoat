@@ -33,6 +33,9 @@ public class Login extends JFrame {
 	public JLabel lblSuccess;
 	
 	public void signIn() {
+		lblError.setText("");
+		lblSuccess.setText("");
+		
 		// mando al servidor, tipo 10, username~password
 		Global.sendMessage(
 				10, 
@@ -40,11 +43,19 @@ public class Login extends JFrame {
 				Global.serverIp.toString(), 
 				1, 
 				Global.messagingSocket);
-		
 	}
 	
 	public void logIn() {
+		lblError.setText("");
+		lblSuccess.setText("");
 		
+		// mando al servidor tipo 3, username~password
+		Global.sendMessage(
+				3, 
+				txtUser.getText().toString() + "~" + txtPass.getText().toString(), 
+				Global.serverIp.toString(), 
+				1, 
+				Global.messagingSocket);
 	}
 
 	/**
