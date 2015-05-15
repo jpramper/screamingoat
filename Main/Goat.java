@@ -1,7 +1,15 @@
+package Main;
+
+import Core.ConnectionManager;
 import UserInterface.Login;
 
-
-
+/**
+ * Application start point. 
+ *  
+ * @author Juan Pablo Ramírez
+ * @author Alejandro Rojas
+ *
+ */
 public class Goat {
 
 	public static void main(String[] args) {

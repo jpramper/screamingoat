@@ -1,8 +1,15 @@
+package Core;
+
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-
-
+/**
+ * Application-wide variable container class.
+ *  
+ * @author Juan Pablo Ramírez
+ * @author Alejandro Rojas
+ *
+ */
 public class Global {
 	
 	public static final String BROADCAST_IP = "192.168.2.255";
