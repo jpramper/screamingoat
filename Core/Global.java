@@ -133,6 +133,7 @@ public class Global {
 		p.data = data;
 		p.destType = destType;
 		p.serverIp = Global.serverIp.toString();
+		p.serverIp = p.serverIp.replace("/", "");
 		
 		DatagramPacket sendPacket = null;
 		try {
@@ -172,6 +173,7 @@ public class Global {
 		p.data = data;
 		p.destType = destType;
 		p.serverIp = Global.serverIp.toString();
+		p.serverIp = p.serverIp.replace("/", "");
 		DatagramPacket sendPacket = null;
 		
 		for (User usr : Server.active) {

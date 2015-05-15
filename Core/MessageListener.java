@@ -126,7 +126,6 @@ public class MessageListener implements Runnable {
 						loginWindow.lblSuccess.setText("ya puedes loggear");
 						//success loggin in
 						//send syincClocks routine
-						syncClocks();
 						break;
 					case 1:
 						loginWindow.lblError.setText("compilla... la cagaste con el nombre");
@@ -226,6 +225,7 @@ public class MessageListener implements Runnable {
 					if(Server.checkifLastTIme()){
 						
 						Server.berkley();
+						System.out.println("sinz and sending delta");
 						for (User usr : Server.active) {
 							Global.sendMessage(12, usr.deltatime+"", usr.ip, 0, Global.messagingSocket);
 						}

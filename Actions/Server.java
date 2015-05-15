@@ -13,8 +13,10 @@ public class Server {
 	}
 	
 	public static boolean createUser(String name, String ip, String password) {
+		System.out.println("voy a guardar su password: " + password);
 		User u = new User(name, ip, password);
 		
+		System.out.println("aqui debe salir: " + u.nickname);
 		for (User usr : users) {
 			if(usr.nickname.equals(name))
 			{
@@ -23,23 +25,35 @@ public class Server {
 		}
 		users.add(u);
 		
+		System.out.println("users: ");
+		for (User usr : users) {
+			System.out.println(usr.nickname);
+		}
+		
 		return true;
 	}
 	
 	public static int logginUser(String name, String password) {
+		System.out.println("el usuario: " + name);
+		System.out.println("el password: " + password);
 		
 		for (User usr : users) {
 			if(usr.nickname.equals(name)){
-					if(usr.password.equals(password)) {
-						active.add(usr); //add user to actives
-						break;
-					} 
-					return 2;
+				System.out.println("encontre el nombre");
+				System.out.println("voy a buscar:" + usr.password);
+				if(usr.password.equals(password)) {
+					active.add(usr); //add user to actives
+					System.out.println("los usuarios estan activos: ");
+					for (User usr2 : active) {
+						System.out.println(usr2.nickname);
+					}
+					
+					return 0;
+				} 
+				return 2;
 			}
-			return 1;
 		}
-		
-		return 0;
+		return 1;
 		//0 no error
 		//1 user error
 		//2 password error
@@ -68,7 +82,7 @@ public class Server {
 	}
 	
 	public static boolean saveDate(String date, String ip){
-		
+		ip = ip.replace("/", "");
 		for (User usr : active) {
 			if(usr.ip.contains(ip)) {
 				usr.timestamp = date;
@@ -82,9 +96,11 @@ public class Server {
 	public static boolean checkifLastTIme(){
 		for (User usr : active) {
 			if(usr.actClock == false) {
+				System.out.println("falta " + usr.nickname + " de mandar su tiempo");
 				return false;
 			}
 		}
+		System.out.println("todos mandaron su tiempo");
 		return true;
 	}
 	

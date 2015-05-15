@@ -14,7 +14,8 @@ public class User {
 	
 	User(String name, String ip, String password){
 		nickname = name;
-		ip = this.ip;
-		password = this.password;
+		this.ip = ip;
+		this.ip = this.ip.replace("/", "");
+		this.password = password;
 	}
 }
