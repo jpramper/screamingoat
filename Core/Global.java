@@ -14,6 +14,11 @@ import java.net.UnknownHostException;
  */
 public class Global {
 	
+	/**
+	 * Shows or hides console status messages throughout the program
+	 */
+	public static final boolean DEBUG = true;
+	
 	public static final String BROADCAST_IP = "192.168.2.255";
 	
 	// connection data
@@ -49,7 +54,7 @@ public class Global {
 		}
 	}
 	
-	public void iniciaServidor() {
+	public static void startListener() {
 		// create the server listener to react to communications
 		try{
 	    	listener = new Listener();

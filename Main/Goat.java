@@ -19,14 +19,14 @@ public class Goat {
 
 	public static void main(String[] args) {
 		// initiate server lookup
-		buscaServidor();
+		searchServer();
 		
 		// create and present the login window
 		Login login = Login.getInstance();
 		login.setVisible(true);
 	}
 	
-	public static void buscaServidor() {
+	public static void searchServer() {
 		// create a handshake packet
 		DataPacket p = new DataPacket();
 		p.destType = 1;
@@ -43,6 +43,10 @@ public class Goat {
 		// send the hello packet
 	    try {
 	    	Global.socket.send(sendPacket);
+	    	
+	    	if (Global.DEBUG) 
+	    		System.out.println("Goat.searchServer()| " + 
+	    	"sent pak who listens");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,7 +61,11 @@ public class Goat {
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
-		
+
+    	if (Global.DEBUG) 
+    		System.out.println("Goat.searchServer()| " + 
+    	"waiting for response");
+    	
 		while (!serverAnswered)
 		{
 			try {
@@ -71,11 +79,27 @@ public class Goat {
 						// if the server responded, store its IP and exit 
 						Global.serverIp = receivePacket.getAddress();
 						serverAnswered = true;
+						
+				    	if (Global.DEBUG) 
+				    		System.out.println("Goat.searchServer()| " + 
+				    	"server responded - ip: " + receivePacket.getAddress().toString());
 					}
 				
 			} 
 	    	catch (SocketTimeoutException e) {
 	    		// if no server responded, set self as server
+	        	if (Global.DEBUG) 
+	        		System.out.println("Goat.searchServer()| " + 
+	        	"no server response; starting listener");
+	        	
+	        	try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+	        	
+	    		Global.startListener();
+	    		
 	    		// create a handshake packet
 	    		DataPacket p1 = new DataPacket();
 	    		p1.destType = 0;
@@ -92,9 +116,15 @@ public class Goat {
 	    		// send the hello packet
 	    	    try {
 	    	    	Global.socket.send(sendPacket1);
+	    	    	
+		        	if (Global.DEBUG) 
+		        		System.out.println("Goat.searchServer()| " + 
+		        	"sent 'im server' message");
 	    		} catch (Exception ex) {
 	    			ex.printStackTrace();
 	    		}
+	    	    
+				serverAnswered = true;
 	    	}
 			catch (Exception e) {
 				e.printStackTrace();
