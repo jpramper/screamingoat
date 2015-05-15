@@ -122,6 +122,8 @@ public class MessageListener implements Runnable {
 					case 0:
 						loginWindow.lblSuccess.setText("loggeandote");
 						loginWindow.lblSuccess.setText("sincronizando reloj con berkley");
+						syncClocks();
+						loginWindow.lblSuccess.setText("ya puedes loggear");
 						//success loggin in
 						//send syincClocks routine
 						syncClocks();

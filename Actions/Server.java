@@ -16,7 +16,7 @@ public class Server {
 		User u = new User(name, ip, password);
 		
 		for (User usr : users) {
-			if(usr.nickname == name)
+			if(usr.nickname.equals(name))
 			{
 				return false;	
 			}
