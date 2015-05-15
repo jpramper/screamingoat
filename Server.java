@@ -1,9 +1,10 @@
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import StringUtils.Parsers;
 import Users.Users;
-
 
 import java.util.Date;
 import java.text.DateFormat;
@@ -28,7 +29,7 @@ public class Server implements Runnable {
 	    		receivePacket = new DatagramPacket(receiveData, receiveData.length);
 	    		System.out.println("En espera -.-");
 	    		
-	    		Global.clientSocket.receive(receivePacket);
+	    		Global.socket.receive(receivePacket);
 	    		
 	    		DataPacket pkg = DataPacket.parseDataPacket(receivePacket);
 	    		String address = receivePacket.getAddress().toString();
@@ -53,7 +54,7 @@ public class Server implements Runnable {
 	public void processMsg(DataPacket pkg, String address) {
 		//parse pkg
 		
-		switch (pkg.type) {
+		switch (pkg.dataType) {
 			
 			case 1: //msg
 				break;
@@ -129,20 +130,26 @@ public class Server implements Runnable {
 	public void setupMsg(int type, String data, String destiny) {
 		
 		DataPacket p = new DataPacket();
-		p.type = type;
+		p.dataType = type;
 		p.data = data;
-		p.serverIp = serverIp;
+		p.serverIp = Global.serverIp.toString();
 		
-		// create a UDP packet with the data packet
-		DatagramPacket sendPacket = new DatagramPacket(
-				p.toString().getBytes(), 
-				p.toString().length(), 
-				destiny, 
-				portNumber);
+		DatagramPacket sendPacket = null;
+		try {
+			// create a UDP packet with the data packet
+			sendPacket = new DatagramPacket(
+					p.toString().getBytes(), 
+					p.toString().length(), 
+					InetAddress.getByName(destiny), 
+					Global.portNumber);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
 
 		// send the login packet
 	    try {
-			clientSocket.send(sendPacket);
+			Global.socket.send(sendPacket);
 			System.out.println("se envió");
 		} catch (Exception e) {
 			e.printStackTrace();
