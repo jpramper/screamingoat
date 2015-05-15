@@ -57,31 +57,64 @@ public class Listener implements Runnable {
 		switch (pkg.dataType) {
 			
 			case 1: //msg
+				if(destType == 1){ //receive msg and send it to the correct one
+				
+				} else if(destType == 0){ // you got mail.
+					
+				}
 				break;
 				
 			case 2:	//boadcast	
+				if(destType == 1){ //receive msg and broadcast it
+					
+				} else if(destType == 0){ // you got a public mail.
+					
+				}
 				break;
 				
-			case 3: //login	
-				String[] dtalgin = Parsers.parseSignLogin(pkg.data);
-				int ret = Server.logginUser(dtalgin[0], dtalgin[1]);
 				
-				switch (ret){
+			case 3: //login	
+				if(destType == 1){ //receive loggin request
+				
+					String[] dtalgin = Parsers.parseSignLogin(pkg.data);
+					int ret = Server.logginUser(dtalgin[0], dtalgin[1]);
+					
+					switch (ret){
+						case 0:
+							setupMsg(3, "0", address,0); //success loggin in
+							syncClocks();
+							break;
+						case 1:
+							setupMsg(3, "1", address,0); //incorrect name
+							break;
+						case 2:
+							setupMsg(3, "2", address,0); //incorrect password
+							break;
+						default:
+							break;
+					}
+					
+					
+				} else if(destType == 0){ // server response 0 succes, 1 name, 2 password
+					switch (Integer.parseInt(pkg.data)){
 					case 0:
-						setupMsg(6, "", address,0); //success loggin in
-						syncClocks();
+						//success loggin in
+						//send syincClocks routine
 						break;
 					case 1:
-						setupMsg(6, "1", address,0); //incorrect name
+						//incorrect name
 						break;
 					case 2:
-						setupMsg(6, "2", address,0); //incorrect password
+						//incorrect password
 						break;
+						
 					default:
 						break;
+					}
 				}
 				
 				break;
+				
 				
 				
 			//shareReq	
@@ -138,6 +171,15 @@ public class Listener implements Runnable {
 					setupMsg(11,time,Global.serverIp.toString(),1);
 				}
 				
+			case 12:
+				if(destType == 1){ //server ... do nothing
+					
+				}else if (destType == 0){ //set my delta
+					for (User usr : Server.active) {
+						if(usr.ip.equals(address))
+							usr.deltatime = Float.parseFloat(pkg.data);
+					}
+				}
 			default:
 				break;
 		
