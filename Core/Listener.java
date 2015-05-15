@@ -78,7 +78,7 @@ public class Listener implements Runnable {
 					}
 					
 				} else if(destType == 0){ // you got mail.!!
-					//print it
+					//print it pkg.data
 				}
 				break;
 				
@@ -95,7 +95,7 @@ public class Listener implements Runnable {
 					
 					
 				} else if(destType == 0){ // you got a public mail.
-					
+					//print pkg.data
 				}
 				break;
 				
