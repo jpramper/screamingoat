@@ -1,9 +1,6 @@
 package Core;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-
 import Actions.Client;
 import Actions.Server;
 import Actions.User;
@@ -119,16 +116,22 @@ public class MessageListener implements Runnable {
 					
 					
 				} else if(destType == 0){ // server response 0 succes, 1 name, 2 password
+					Login loginWindow = Login.getInstance();
 					switch (Integer.parseInt(pkg.data)){
+					
 					case 0:
+						loginWindow.lblLblsucc.setText("loggeandote");
+						loginWindow.lblLblsucc.setText("sincronizando reloj con berkley");
 						//success loggin in
 						//send syincClocks routine
 						syncClocks();
 						break;
 					case 1:
+						loginWindow.lblError.setText("compilla... la cagaste con el nombre");
 						//incorrect name
 						break;
 					case 2:
+						loginWindow.lblError.setText("mmm... ese no es tu passbordio");
 						//incorrect password
 						break;
 						
