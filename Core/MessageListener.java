@@ -9,43 +9,37 @@ import Actions.Server;
 import Actions.User;
 import StringUtils.Parsers;
 
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
-
-public class Listener implements Runnable {
+public class MessageListener implements Runnable {
+	public boolean isListening;
 	
 	public void run(){
-		Global.isListening = true;
+		isListening = true;
 		DatagramPacket receivePacket;
 		byte[] receiveData;
+		
+		if (Global.DEBUG) 
+    		System.out.println("MessageListener.run()| " + 
+    	"listener started.");
 
-	    while(Global.isListening){
+	    while(isListening){
 	    	try {
 	    		receiveData = new byte[1024];
 	    		receivePacket = new DatagramPacket(receiveData, receiveData.length);
-	    		System.out.println("En espera -.-");
 	    		
-	    		Global.socket.receive(receivePacket);
+	    		Global.messagingSocket.receive(receivePacket);
 	    		
 	    		DataPacket pkg = DataPacket.parseDataPacket(receivePacket);
 	    		String address = receivePacket.getAddress().toString();
 	    		
 	    		processMsg(pkg, address);
-	    		
-	    		
-	    		
-
-	    		System.out.println("RECIBI!!!!!!!!!!!!!!!!!!!!! :D");
 	    	}
 	    	catch (SocketTimeoutException e) {
 	    		continue;
 	    	}
 	    	catch (Exception e) {
 				e.printStackTrace();
-				Global.isListening = false;
+				isListening = false;
 	    	}
 	    }
 	}
@@ -259,7 +253,7 @@ public class Listener implements Runnable {
 					p.toString().getBytes(), 
 					p.toString().length(), 
 					InetAddress.getByName(destiny), 
-					Global.portNumber);
+					Global.messagingPort);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -267,7 +261,7 @@ public class Listener implements Runnable {
 
 		// send the login packet
 	    try {
-			Global.socket.send(sendPacket);
+			Global.messagingSocket.send(sendPacket);
 			System.out.println("se envió");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -295,7 +289,7 @@ public class Listener implements Runnable {
 						p.toString().getBytes(), 
 						p.toString().length(), 
 						InetAddress.getByName(usr.ip), 
-						Global.portNumber);
+						Global.messagingPort);
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
