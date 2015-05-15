@@ -23,7 +23,7 @@ public class Global {
 	public static int portNumber;
 
 	// listener
-	public static Server listener = null;
+	public static Listener listener = null;
 	public static boolean isServer = false;
 	public static boolean isListening = false; // TODO cambiar en server
 

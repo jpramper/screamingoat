@@ -4,8 +4,10 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import Actions.Client;
+import Actions.Server;
+import Actions.User;
 import StringUtils.Parsers;
-import Users.Users;
 
 import java.util.Date;
 import java.text.DateFormat;
@@ -13,18 +15,17 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class Server implements Runnable {
-	public boolean isRunning;
+public class Listener implements Runnable {
 	
-	Server() {
-	  isRunning = true;
+	Listener() {
+	  Global.isListening = true;
 	}
 	
 	public void run(){
 		DatagramPacket receivePacket;
 		byte[] receiveData;
 
-	    while(isRunning){
+	    while(Global.isListening){
 	    	try {
 	    		receiveData = new byte[1024];
 	    		receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -47,13 +48,14 @@ public class Server implements Runnable {
 	    	}
 	    	catch (Exception e) {
 				e.printStackTrace();
-				isRunning = false;
+				Global.isListening = false;
 	    	}
 	    }
 	}
 	
 	public void processMsg(DataPacket pkg, String address) {
 		//parse pkg
+		int destType = pkg.destType;
 		
 		switch (pkg.dataType) {
 			
@@ -65,17 +67,18 @@ public class Server implements Runnable {
 				
 			case 3: //login	
 				String[] dtalgin = Parsers.parseSignLogin(pkg.data);
-				int ret = Users.logginUser(dtalgin[0], dtalgin[1]);
+				int ret = Server.logginUser(dtalgin[0], dtalgin[1]);
 				
 				switch (ret){
 					case 0:
-						setupMsg(6, "", address); //success loggin in
+						setupMsg(6, "", address,0); //success loggin in
+						syncClocks();
 						break;
 					case 1:
-						setupMsg(6, "1", address); //incorrect name
+						setupMsg(6, "1", address,0); //incorrect name
 						break;
 					case 2:
-						setupMsg(6, "2", address); //incorrect password
+						setupMsg(6, "2", address,0); //incorrect password
 						break;
 					default:
 						break;
@@ -86,7 +89,7 @@ public class Server implements Runnable {
 				
 			//shareReq	
 			case 4:
-				setupMsg(5, Users.actives(), address);
+				setupMsg(5, Server.actives(), address,0);
 				break;
 				
 			//shareRsp  who is active ?	
@@ -99,8 +102,8 @@ public class Server implements Runnable {
 				
 			//exit	
 			case 7:
-				Users.removeActiveUser(address);
-				setupMsg(6, "", address);
+				Server.removeActiveUser(address);
+				setupMsg(6, "", address,0);
 				break;
 				
 			//error	
@@ -109,18 +112,30 @@ public class Server implements Runnable {
 				
 			//handshake
 			case 9:
-				setupMsg(9, "", address);
+				setupMsg(9, "", address,0);
 				break;
 				
 			//sign in
 			case 10:
 				String[] dtasgnin = Parsers.parseSignLogin(pkg.data);
 				
-				if(Users.createUser(dtasgnin[0], address ,dtasgnin[1]))
-					setupMsg(6, "", address); //success sign in
+				if(Server.createUser(dtasgnin[0], address ,dtasgnin[1]))
+					setupMsg(6, "", address,0); //success sign in
 				else
-					setupMsg(8, "", address); //name already taken
+					setupMsg(8, "", address,0); //name already taken
 				break;
+				
+			//time	
+			case 11:
+				if(destType == 1){ //server mode (receive time and process it)
+					Server.saveDate(pkg.data,address);
+					if(Server.checkifLastTIme()){
+						
+					}
+				}else if (destType == 0){ // Client mode (send my timestamp)
+					String time = Client.getTime();
+					setupMsg(11,time,Global.serverIp.toString(),1);
+				}
 				
 			default:
 				break;
@@ -128,7 +143,7 @@ public class Server implements Runnable {
 		}
 	}
 	
-	public void setupMsg(int type, String data, String destiny) {
+	public void setupMsg(int type, String data, String destiny, int destType) {
 		
 		DataPacket p = new DataPacket();
 		p.dataType = type;
@@ -159,7 +174,32 @@ public class Server implements Runnable {
 		return;
 	}
 	
+	public void brodcast(int type, String data) {
+		
+		DataPacket p = new DataPacket();
+		p.dataType = type;
+		p.data = data;
+		p.serverIp = Global.serverIp.toString();
+		DatagramPacket sendPacket = null;
+		
+		for (User usr : Server.active) {
+			sendPacket = null;
+			
+			try {
+				// create a UDP packet with the data packet
+				sendPacket = new DatagramPacket(
+						p.toString().getBytes(), 
+						p.toString().length(), 
+						InetAddress.getByName(usr.ip), 
+						Global.portNumber);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public String syncClocks(){
+		brodcast(11,"");
 		
 		return "";
 	}
