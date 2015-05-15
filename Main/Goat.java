@@ -1,6 +1,7 @@
 package Main;
 
 import Core.ConnectionManager;
+import Core.Global;
 import UserInterface.Login;
 
 /**

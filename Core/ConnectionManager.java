@@ -44,30 +44,12 @@ public class ConnectionManager {
 	}
 	
 	public void buscaServidor() {
-
-		// establish connection data
-		try {
-			Global.broadcastIp = InetAddress.getByName(Global.BROADCAST_IP);
-			Global.wildcardIp = InetAddress.getByName("0.0.0.0");
-			Global.portNumber = 5001;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
-		// create the socket connections
-		try {
-			Global.socket = new DatagramSocket(Global.portNumber, Global.wildcardIp);
-			Global.socket.setSoTimeout(10000);
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-
 		// create a handshake packet
 		DataPacket p = new DataPacket();
 		p.dataType = 9;
 		p.data = "";
 		
-		// create a UDP packet with the data packet
+		// create a UDP packet with the data packet as a broadcast
 		DatagramPacket sendPacket = new DatagramPacket(
 				p.toString().getBytes(), 
 				p.toString().length(), 
@@ -81,7 +63,7 @@ public class ConnectionManager {
 			e.printStackTrace();
 		}
 	    
-	    // creas un paquete para recibir el handshake del servidor
+	    // create a packet to get a server handshake
 	    byte[] receiveData = new byte[1024];
 		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 		try {

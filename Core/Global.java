@@ -2,6 +2,8 @@ package Core;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  * Application-wide variable container class.
@@ -23,9 +25,28 @@ public class Global {
 	// listener
 	public static Server listener = null;
 	public static boolean isServer = false;
-	public static boolean isListening = false;
+	public static boolean isListening = false; // TODO cambiar en server
 
 	// client's socket
 	public static DatagramSocket socket = null;
+	
+	// static initializer
+	static {
+		// establish connection data
+		try {
+			broadcastIp = InetAddress.getByName(BROADCAST_IP);
+			wildcardIp = InetAddress.getByName("0.0.0.0");
+			portNumber = 5001;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+		// create the socket connections
+		try {
+			Global.socket = new DatagramSocket(portNumber, wildcardIp);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

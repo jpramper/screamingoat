@@ -3,6 +3,13 @@ package Core;
 import java.net.DatagramPacket;
 
 /*
+ * 
+ * Mensaje para servidor o para cliente
+ * para cliente (0)
+ * para servidor (1)
+ * 
+ * ~|~
+ * 
  * Ip del Servidor (string)
  * string variable
  * 
@@ -10,7 +17,7 @@ import java.net.DatagramPacket;
  * 
  * Tipo de Mensaje (int)
  * msg(1), 
- * broadcast(2), 
+ * broadcastmsg(2), 
  * login(3), 
  * shareReq(4), 
  * shareRsp(5), 
@@ -19,7 +26,10 @@ import java.net.DatagramPacket;
  * error(8), 
  * handshake(9),
  * signIn(10),
- * time(11)
+ * timereq(11),
+ * timeack(12),
+ * hello?(13) [¿quién está escuchando?]
+ * hello!(14) [isServer ? data = "true": data = "false"]
  * 
  * ~|~
  * 
@@ -35,6 +45,7 @@ import java.net.DatagramPacket;
  */
 public class DataPacket {
 
+	public int destType;
 	public String serverIp;
 	public int dataType;
 	public String data;
@@ -44,7 +55,8 @@ public class DataPacket {
 	}
 	
 	public void init() {
-		serverIp = "";
+		destType = -1;
+		serverIp = (Global.serverIp == null) ? "-1" : Global.serverIp.toString();
 		dataType = -1;
 		data = "";
 	}
@@ -52,6 +64,8 @@ public class DataPacket {
 	@Override
 	public String toString() {
 		return 
+				destType +
+				"~|~" + 
 				serverIp + 
 				"~|~" + 
 				dataType + 
@@ -67,9 +81,10 @@ public class DataPacket {
 		String[] xmlParts = xml.split("~|~");
 		try {
 			// parse the halves
-			p.serverIp = xmlParts[0];
-			p.dataType = Integer.parseInt(xmlParts[1]);
-			p.data = xmlParts[2];
+			p.destType = Integer.parseInt(xmlParts[0]);
+			p.serverIp = xmlParts[1];
+			p.dataType = Integer.parseInt(xmlParts[2]);
+			p.data = xmlParts[3];
 		} catch (Exception e) {
 			p.init(); // set invalid packet
 		}
