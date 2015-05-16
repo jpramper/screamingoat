@@ -85,6 +85,30 @@ public class ConnectionListener implements Runnable {
 							0, 
 							Global.ackSocket, 
 							Global.ackPort);
+					DataPacket p = new DataPacket();
+					p.dataType = 15;
+					p.data = "";
+					p.destType = 0;
+					p.serverIp = Global.serverIp.toString().replace("/", "");
+
+					// create a UDP packet with the data packet
+					DatagramPacket sendPacket = null;
+					try {
+						sendPacket = new DatagramPacket(
+								p.toString().getBytes(), 
+								p.toString().length(), 
+								InetAddress.getByName(address.replace("/", "")), 
+								Global.ackPort);
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
+					}
+					
+					// send the packet
+				    try {
+						Global.ackSocket.send(sendPacket);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 				break;
 				
