@@ -79,6 +79,8 @@ public class ChatWindow extends JFrame {
 				1, 
 				Global.messagingSocket,
 				Global.messagingPort);
+		
+		txtOutgoing.setText("");
 	}
 	
 	public void whoIsOnline() {
@@ -196,5 +198,7 @@ public class ChatWindow extends JFrame {
 		lblEscribaAqui = new JLabel("Escriba Aqui:");
 		lblEscribaAqui.setBounds(12, 177, 114, 15);
 		contentPane.add(lblEscribaAqui);
+		
+		getRootPane().setDefaultButton(btnEnviar);
 	}
 }

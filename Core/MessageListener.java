@@ -141,6 +141,7 @@ public class MessageListener implements Runnable {
 						ChatWindow.getInstance().setVisible(true);
 						ChatWindow.getInstance().txtNickname.setText(
 								Login.getInstance().txtUser.getText().trim());
+						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
 						//success loggin in
 						//send syincClocks routine
 						break;
