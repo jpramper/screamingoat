@@ -1,4 +1,5 @@
 package UserInterface;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -9,7 +10,6 @@ import javax.swing.JButton;
 import Core.Global;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -42,7 +42,8 @@ public class Login extends JFrame {
 				txtUser.getText().toString() + "~" + txtPass.getText().toString(), 
 				Global.serverIp.toString(), 
 				1, 
-				Global.messagingSocket);
+				Global.messagingSocket,
+				Global.messagingPort);
 	}
 	
 	public void logIn() {
@@ -55,7 +56,8 @@ public class Login extends JFrame {
 				txtUser.getText().toString() + "~" + txtPass.getText().toString(), 
 				Global.serverIp.toString(), 
 				1, 
-				Global.messagingSocket);
+				Global.messagingSocket,
+				Global.messagingPort);
 	}
 
 	/**

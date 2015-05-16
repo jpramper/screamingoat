@@ -4,10 +4,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import Actions.Server;
 import Actions.User;
+import Main.Goat;
 
 /**
  * Application-wide variable container class.
@@ -119,12 +121,48 @@ public class Global {
 	    }
 	}
 	
+	public static boolean isConnectionAlive() {
+		boolean result = false;
+		// ask the server if its alive through the discovery port
+		Global.sendMessage(
+				15, 
+				"", 
+				Global.serverIp.toString(), 
+				0, 
+				Global.discoverySocket, 
+				Global.discoveryPort);
+		
+		// wait for confirmation of the server on the ack port
+		DatagramPacket receivePacket;
+		byte[] receiveData;
+		try {
+    		receiveData = new byte[1024];
+    		receivePacket = new DatagramPacket(receiveData, receiveData.length);
+    		
+    		Global.ackSocket.receive(receivePacket);
+    		
+    		result = true;
+    	}
+    	catch (SocketTimeoutException e) {
+    		// do a server discovery again
+    		System.out.println("isConnectionAlive: SERVER IS DOWN!");
+    	}
+    	catch (Exception e) {
+			e.printStackTrace();
+    	}
+		
+		return result;
+	}
+	
 	public static void sendMessage(
 			int type, 
 			String data, 
 			String destiny, 
 			int destType,
-			DatagramSocket socket) {
+			DatagramSocket socket,
+			int port) {
+		if (!isConnectionAlive())
+			Goat.searchServer();
 		
 		if(destiny.contains("/")) destiny = destiny.replace("/", ""); //   avoid /
 		
@@ -142,7 +180,7 @@ public class Global {
 					p.toString().getBytes(), 
 					p.toString().length(), 
 					InetAddress.getByName(destiny), 
-					Global.messagingPort);
+					port);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -167,6 +205,8 @@ public class Global {
 			int destType, 
 			String sender, 
 			DatagramSocket socket) {
+		if (!isConnectionAlive())
+			Goat.searchServer();
 		
 		DataPacket p = new DataPacket();
 		p.dataType = type;

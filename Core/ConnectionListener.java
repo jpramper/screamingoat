@@ -55,22 +55,13 @@ public class ConnectionListener implements Runnable {
 			case 13: // who listens?
 				if (Global.isServer) {
 					// if i'm the server, send a response on the ACK channel
-					DataPacket p = new DataPacket();
-					p.destType = 0;
-					p.dataType = 14; // i'm the server!
-					p.data = "";
-
-				    try {
-						DatagramPacket sendPacket = new DatagramPacket(
-								p.toString().getBytes(), 
-								p.toString().length(), 
-								InetAddress.getByName(address), // reply to sender
-								Global.ackPort); // use the ACK channel
-						
-				    	Global.ackSocket.send(sendPacket);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					Global.sendMessage(
+							14, 
+							"", 
+							address, 
+							0, 
+							Global.ackSocket, 
+							Global.ackPort);
 				}
 				break;
 				
@@ -82,6 +73,19 @@ public class ConnectionListener implements Runnable {
 					e.printStackTrace();
 				}
 				
+				break;
+				
+			case 15: 
+				if (Global.isServer) {
+					// if i'm the server, send a response on the ACK channel
+					Global.sendMessage(
+							15, 
+							"", 
+							address, 
+							0, 
+							Global.ackSocket, 
+							Global.ackPort);
+				}
 				break;
 				
 			default:

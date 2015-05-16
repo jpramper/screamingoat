@@ -1,5 +1,4 @@
 package UserInterface;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -65,7 +64,8 @@ public class ChatWindow extends JFrame {
 				"", 
 				Global.serverIp.toString(), 
 				1, 
-				Global.messagingSocket);
+				Global.messagingSocket,
+				Global.messagingPort);
 	}
 	
 	public void climateCheck() {
