@@ -47,6 +47,7 @@ public class MessageListener implements Runnable {
 	public void processMsg(DataPacket pkg, String address) {
 		//parse pkg
 		int destType = pkg.destType;
+		address = address.replace("/", "");
 		pkg.data = pkg.data.trim();
 		
 		switch (pkg.dataType) {
@@ -54,10 +55,11 @@ public class MessageListener implements Runnable {
 			case 1: //msg
 				if(destType == 1){ //receive msg and send it to the correct one
 					String sender = "";
-					for(User usr : Server.active){
-						if(usr.ip.equals(address)){
-							sender = usr.nickname;
-						}
+					for(User usr : Server.users){
+						if(usr.isactive)
+							if(usr.ip.equals(address)){
+								sender = usr.nickname;
+							}
 					}
 					
 					String[] datas = new String[2];
@@ -69,7 +71,7 @@ public class MessageListener implements Runnable {
 					}else if (person.equals("banned")){
 						// usuario bloqueado.
 					}else{
-						Global.sendMessage(1, sender+": " + datas[1], person, 0, Global.messagingSocket);
+						Global.sendMessage(1, sender+": " + datas[1], person, 0, Global.messagingSocket,Global.messagingPort);
 					}
 					
 				} else if(destType == 0){ // you got mail.!!
@@ -81,10 +83,11 @@ public class MessageListener implements Runnable {
 				if(destType == 1){ //receive msg and broadcast it
 					
 					String sender = "";
-					for(User usr : Server.active){
-						if(usr.ip.equals(address)){
-							sender = usr.nickname;
-						}
+					for(User usr : Server.users){
+						if(usr.isactive)
+							if(usr.ip.equals(address)){
+								sender = usr.nickname;
+							}
 					}
 					Global.sendBroadcast(2, sender + ": " + pkg.data , 0,sender, Global.messagingSocket);
 					
@@ -103,14 +106,14 @@ public class MessageListener implements Runnable {
 					
 					switch (ret){
 						case 0:
-							Global.sendMessage(3, "0", address,0, Global.messagingSocket); //success loggin in
+							Global.sendMessage(3, "0", address,0, Global.messagingSocket,Global.messagingPort); //success loggin in
 							syncClocks();
 							break;
 						case 1:
-							Global.sendMessage(3, "1", address,0, Global.messagingSocket); //incorrect name
+							Global.sendMessage(3, "1", address,0, Global.messagingSocket,Global.messagingPort); //incorrect name
 							break;
 						case 2:
-							Global.sendMessage(3, "2", address,0, Global.messagingSocket); //incorrect password
+							Global.sendMessage(3, "2", address,0, Global.messagingSocket,Global.messagingPort); //incorrect password
 							break;
 						default:
 							break;
@@ -159,7 +162,7 @@ public class MessageListener implements Runnable {
 			//shareReq	
 			case 4:
 				if(destType == 1){ //receive request of share active users
-					Global.sendMessage(4, Server.actives(), address,0, Global.messagingSocket);
+					Global.sendMessage(4, Server.actives(), address,0, Global.messagingSocket,Global.messagingPort);
 				} else if(destType == 0){ // receive active users
 					ChatWindow.getInstance().txtIncoming.setText(
 							"Están conectados: " + pkg.data.trim() + "\n" +
@@ -186,7 +189,7 @@ public class MessageListener implements Runnable {
 			//exit	
 			case 7:
 				Server.removeActiveUser(address);
-				Global.sendMessage(6, "", address,0, Global.messagingSocket);
+				Global.sendMessage(6, "", address,0, Global.messagingSocket,Global.messagingPort);
 				break;
 				
 			//error	
@@ -195,7 +198,7 @@ public class MessageListener implements Runnable {
 				
 			//handshake
 			case 9:
-				Global.sendMessage(9, "", address,0, Global.messagingSocket);
+				Global.sendMessage(9, "", address,0, Global.messagingSocket,Global.messagingPort);
 				break;
 				
 			//sign in
@@ -204,9 +207,9 @@ public class MessageListener implements Runnable {
 				
 				if(destType == 1){ //sign in request
 					if(Server.createUser(dtasgnin[0], address ,dtasgnin[1]))
-						Global.sendMessage(10, "0", address,0, Global.messagingSocket); //success sign in
+						Global.sendMessage(10, "0", address,0, Global.messagingSocket,Global.messagingPort); //success sign in
 					else
-						Global.sendMessage(10, "1", address,0, Global.messagingSocket); //name already taken
+						Global.sendMessage(10, "1", address,0, Global.messagingSocket,Global.messagingPort); //name already taken
 					
 					
 				} else if(destType == 0){ // answer from server
@@ -239,14 +242,15 @@ public class MessageListener implements Runnable {
 						
 						Server.berkley();
 						System.out.println("sinz and sending delta");
-						for (User usr : Server.active) {
-							Global.sendMessage(12, usr.deltatime+"", usr.ip, 0, Global.messagingSocket);
+						for (User usr : Server.users) {
+							if(usr.isactive)
+								Global.sendMessage(12, usr.deltatime+"", usr.ip, 0, Global.messagingSocket,Global.messagingPort);
 						}
 						Server.endActClock();
 					}
 				}else if (destType == 0){ // Client mode (send my timestamp)
 					String time = Client.getTime();
-					Global.sendMessage(11,time,Global.serverIp.toString(),1, Global.messagingSocket);
+					Global.sendMessage(11,time,Global.serverIp.toString(),1, Global.messagingSocket,Global.messagingPort);
 				}
 				
 			//time setup	
@@ -254,11 +258,26 @@ public class MessageListener implements Runnable {
 				if(destType == 1){ //server ... do nothing
 					
 				}else if (destType == 0){ //set my delta
-					for (User usr : Server.active) {
+					for (User usr : Server.users) {
+						if(usr.isactive)
+							if(usr.ip.equals(address))
+								usr.deltatime = Float.parseFloat(pkg.data);
+					}
+				}
+				break;
+				
+			//zinc mssgs	
+			case 13:
+				if(destType == 1){ //server ... send data
+					
+				}else if (destType == 0){ //retrieve data and sinc
+					for (User usr : Server.users) {
+						//TODO!
 						if(usr.ip.equals(address))
 							usr.deltatime = Float.parseFloat(pkg.data);
 					}
 				}
+				break;
 			default:
 				break;
 		

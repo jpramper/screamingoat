@@ -4,7 +4,6 @@ import StringUtils.Parsers;
 import java.util.ArrayList;
 
 public class Server {
-	public static ArrayList<User> active = new ArrayList<User>();
 	public static ArrayList<User> users = new ArrayList<User>();
 	
 	static boolean addUser() {
@@ -42,10 +41,12 @@ public class Server {
 				System.out.println("encontre el nombre");
 				System.out.println("voy a buscar:" + usr.password);
 				if(usr.password.equals(password)) {
-					if(active.contains(usr)) return 3; //skip if already logged in
-					active.add(usr); //add user to actives
+					if(usr.isactive == true) return 3; //skip if already logged in
+					usr.isactive = true; //add user to actives
 					System.out.println("los usuarios estan activos: ");
-					for (User usr2 : active) {
+					
+					for (User usr2 : users) {
+						if(usr2.isactive)
 						System.out.println(usr2.nickname);
 					}
 					
@@ -62,44 +63,46 @@ public class Server {
 	
 	public static String actives(){
 		String actives = "";
-		for (User usr : active) {
-			actives = actives.concat(usr.nickname + ",");
+		for (User usr : users) {
+			if(usr.isactive)
+				actives = actives.concat(usr.nickname + ",");
 		}
 		
 		return actives;
 	}
 	
 	public static boolean removeActiveUser(String ip){
-		int index = 0;
+		ip = ip.replace("/", "");
 		for (User usr : users) {
 			if(usr.ip.contains(ip)) {
 				System.out.println("voy a sacar a: " + usr.nickname);
-				break;
+				usr.isactive = false;
+				return true;
 			}
-			index ++;
 		}
-		active.remove(index);
-		return true;
+		return false;
 	}
 	
 	public static boolean saveDate(String date, String ip){
 		ip = ip.replace("/", "");
-		for (User usr : active) {
-			if(usr.ip.contains(ip)) {
-				usr.timestamp = date;
-				usr.actClock = true;
-				break;
-			}
+		for (User usr : users) {
+			if(usr.isactive)
+				if(usr.ip.contains(ip)) {
+					usr.timestamp = date;
+					usr.actClock = true;
+					break;
+				}
 		}
 		return true;
 	}
 	
 	public static boolean checkifLastTIme(){
-		for (User usr : active) {
-			if(usr.actClock == false) {
-				System.out.println("falta " + usr.nickname + " de mandar su tiempo");
-				return false;
-			}
+		for (User usr : users) {
+			if(usr.isactive)
+				if(usr.actClock == false) {
+					System.out.println("falta " + usr.nickname + " de mandar su tiempo");
+					return false;
+				}
 		}
 		System.out.println("todos mandaron su tiempo");
 		return true;
@@ -111,23 +114,26 @@ public class Server {
 		int n = 0;
 		String[] dta = new String[2];
 		//get prom in secs
-		for (User usr : active) {
-			n ++;
-			secs = 0;
-			dta = Parsers.parseTime(usr.timestamp);
-			secs = Integer.parseInt(dta[0]) * 60;
-			secs = secs + Integer.parseInt(dta[1]);
-			secs *= 60;
-			secs += Integer.parseInt(dta[2]);
-			
-			usr.secstimestamp = secs;
-			totalsecs += secs;
+		for (User usr : users) {
+			if(usr.isactive){
+				n ++;
+				secs = 0;
+				dta = Parsers.parseTime(usr.timestamp);
+				secs = Integer.parseInt(dta[0]) * 60;
+				secs = secs + Integer.parseInt(dta[1]);
+				secs *= 60;
+				secs += Integer.parseInt(dta[2]);
+				
+				usr.secstimestamp = secs;
+				totalsecs += secs;
+			}
 		}
 		
 		float prom = totalsecs / n;
 		
-		for (User usr : active) {
-			usr.deltatime = prom - usr.secstimestamp;
+		for (User usr : users) {
+			if(usr.isactive)
+				usr.deltatime = prom - usr.secstimestamp;
 		}
 	}
 	
@@ -160,30 +166,33 @@ public class Server {
 	
 	public static boolean endActClock(){
 		
-		for (User usr : active) {
+		for (User usr : users) {
+			if(usr.isactive)
 				usr.actClock = false;
 		}
 		return true;
 	}
 	
 	public static void banPerson(String nickname, String address){
-		for (User usr : active) {
-			if(usr.ip.equals(address)){
-				User.banneds.add(nickname);
-			}
+		for (User usr : users) {
+			if (usr.isactive)
+				if(usr.ip.equals(address)){
+					User.banneds.add(nickname);
+				}
 		}
 	}
 	
 	public static String returnPerson(String name, String sender){
 		
 		
-		for (User usr : active) {
-			if(usr.nickname.equals(name)){
-				if(User.banneds.contains(sender)){
-					return "banned";
+		for (User usr : users) {
+			if(usr.isactive)
+				if(usr.nickname.equals(name)){
+					if(User.banneds.contains(sender)){
+						return "banned";
+					}
+					return usr.ip;
 				}
-				return usr.ip;
-			}
 		}
 		return null;
 	}
@@ -198,4 +207,14 @@ public class Server {
 		
 	}
 	
+	public static String sincData(){
+		String fullData = "";
+		
+		for (User usr : users) {
+			//TODO
+			//actives = actives.concat(usr.nickname + ",");
+		}
+		
+		return fullData;
+	}
 }

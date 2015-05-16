@@ -216,31 +216,33 @@ public class Global {
 		p.serverIp = p.serverIp.replace("/", "");
 		DatagramPacket sendPacket = null;
 		
-		for (User usr : Server.active) {
-			if(User.banneds.contains(sender)) continue; //skip banned persons
-			
-			sendPacket = null;
-			
-			try {
-				// create a UDP packet with the data packet
-				sendPacket = new DatagramPacket(
-						p.toString().getBytes(), 
-						p.toString().length(), 
-						InetAddress.getByName(usr.ip), 
-						Global.messagingPort);
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			}
-			
-			// send the packet
-		    try {
-				socket.send(sendPacket);
+		for (User usr : Server.users) {
+			if(usr.isactive){
+				if(User.banneds.contains(sender)) continue; //skip banned persons
 				
-				if (Global.DEBUG) 
-		    		System.out.println("Global.sendBroadcast()| " + 
-				"Se envió broadcast: " + p);
-			} catch (Exception e) {
-				e.printStackTrace();
+				sendPacket = null;
+				
+				try {
+					// create a UDP packet with the data packet
+					sendPacket = new DatagramPacket(
+							p.toString().getBytes(), 
+							p.toString().length(), 
+							InetAddress.getByName(usr.ip), 
+							Global.messagingPort);
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+				
+				// send the packet
+			    try {
+					socket.send(sendPacket);
+					
+					if (Global.DEBUG) 
+			    		System.out.println("Global.sendBroadcast()| " + 
+					"Se envió broadcast: " + p);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

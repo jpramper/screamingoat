@@ -7,6 +7,7 @@ public class User {
 	public String ip;
 	public String password;
 	public String timestamp;
+	public boolean isactive;
 	public float secstimestamp;
 	public float deltatime;
 	public boolean actClock;
