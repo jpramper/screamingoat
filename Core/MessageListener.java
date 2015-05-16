@@ -114,8 +114,7 @@ public class MessageListener implements Runnable {
 					switch (ret){
 						case 0:
 							Global.sendMessage(3, "0", address,0, Global.messagingSocket,Global.messagingPort); //success loggin in
-							//syncClocks();
-							//syncData();
+
 							break;
 						case 1:
 							Global.sendMessage(3, "1", address,0, Global.messagingSocket,Global.messagingPort); //incorrect name
@@ -142,6 +141,8 @@ public class MessageListener implements Runnable {
 						ChatWindow.getInstance().txtNickname.setText(
 								Login.getInstance().txtUser.getText().trim());
 						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
+						//syncClocks();
+						syncData();
 						//success loggin in
 						//send syincClocks routine
 						break;

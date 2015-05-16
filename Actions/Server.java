@@ -217,10 +217,10 @@ public class Server {
 			userInfo = userInfo.concat(usr.ip+",");
 			userInfo = userInfo.concat(usr.password+",");
 			userInfo = userInfo.concat(usr.timestamp+",");
-			userInfo = userInfo.concat(usr.actClock+",");
-			userInfo = userInfo.concat(usr.deltatime+",");
 			userInfo = userInfo.concat(usr.isactive+",");
-			userInfo = userInfo.concat(usr.secstimestamp+"~");
+			userInfo = userInfo.concat(usr.secstimestamp+",");
+			userInfo = userInfo.concat(usr.deltatime+",");
+			userInfo = userInfo.concat(usr.actClock+"~");
 			fullData = fullData.concat(userInfo);
 			i++;
 		}
