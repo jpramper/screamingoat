@@ -36,6 +36,17 @@ public class Login extends JFrame {
 		lblError.setText("");
 		lblSuccess.setText("");
 		
+		if (txtUser.getText().trim().equals(""))
+		{
+			lblError.setText("Username requerido.");
+			return;
+		}
+		if (txtPass.getText().trim().equals(""))
+		{
+			lblError.setText("Password requerido.");
+			return;
+		}
+		
 		// mando al servidor, tipo 10, username~password
 		Global.sendMessage(
 				10, 
@@ -49,6 +60,17 @@ public class Login extends JFrame {
 	public void logIn() {
 		lblError.setText("");
 		lblSuccess.setText("");
+		
+		if (txtUser.getText().trim().equals(""))
+		{
+			lblError.setText("Username requerido.");
+			return;
+		}
+		if (txtPass.getText().trim().equals(""))
+		{
+			lblError.setText("Password requerido.");
+			return;
+		}
 		
 		// mando al servidor tipo 3, username~password
 		Global.sendMessage(

@@ -76,7 +76,10 @@ public class MessageListener implements Runnable {
 					}
 					
 				} else if(destType == 0){ // you got mail.!!
-					//print it pkg.data
+					ChatWindow.getInstance().txtIncoming.setText(
+							pkg.data.trim() + "\n" +
+							ChatWindow.getInstance().txtIncoming.getText()
+							);
 				}
 				break;
 				
@@ -94,7 +97,10 @@ public class MessageListener implements Runnable {
 					
 					
 				} else if(destType == 0){ // you got a public mail.
-					//print pkg.data
+					ChatWindow.getInstance().txtIncoming.setText(
+							pkg.data.trim() + "\n" +
+							ChatWindow.getInstance().txtIncoming.getText()
+							);
 				}
 				break;
 				
@@ -108,8 +114,8 @@ public class MessageListener implements Runnable {
 					switch (ret){
 						case 0:
 							Global.sendMessage(3, "0", address,0, Global.messagingSocket,Global.messagingPort); //success loggin in
-							syncClocks();
-							syncData();
+							//syncClocks();
+							//syncData();
 							break;
 						case 1:
 							Global.sendMessage(3, "1", address,0, Global.messagingSocket,Global.messagingPort); //incorrect name

@@ -13,8 +13,6 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 
 import Core.Global;
 
@@ -54,7 +52,33 @@ public class ChatWindow extends JFrame {
 	private JMenuItem mntmCerrarSesin;
 	
 	public void sendMessage() {
+		// mando al servidor, tipo 10, username~password
+		String message = txtOutgoing.getText().trim();
+		int messageType = 2; // assume a broadcast by default
 		
+		if (message.equals("")) return;
+		
+		if (message.startsWith("@"))
+		{
+			// private message
+			if (!message.contains(" ")) return;
+			
+			// extract the user
+			String user = message.split(" ")[0].replace("@", "");
+			message = message.substring(user.length()+2);
+			
+			message = user + "~" + message;
+			
+			messageType = 1; // set type to private
+		}
+		
+		Global.sendMessage(
+				messageType, 
+				message, 
+				Global.serverIp.toString(), 
+				1, 
+				Global.messagingSocket,
+				Global.messagingPort);
 	}
 	
 	public void whoIsOnline() {
