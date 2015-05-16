@@ -63,7 +63,7 @@ public class Server {
 	public static String actives(){
 		String actives = "";
 		for (User usr : active) {
-			actives.concat(usr.nickname + ",");
+			actives = actives.concat(usr.nickname + ",");
 		}
 		
 		return actives;

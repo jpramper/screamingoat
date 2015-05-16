@@ -21,9 +21,8 @@ public class Goat {
 		searchServer();
 		
 		// create and present the login window
-		Login login = Login.getInstance();
-		login.setVisible(true);
-		login.txtUser.requestFocusInWindow();
+		Login.getInstance().setVisible(true);
+		Login.getInstance().txtUser.requestFocusInWindow();
 	}
 	
 	public static void searchServer() {

@@ -115,20 +115,4 @@ public class Login extends JFrame {
 		lblSuccess.setBounds(12, 92, 304, 15);
 		contentPane.add(lblSuccess);
 	}
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 }

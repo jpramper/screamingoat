@@ -1,10 +1,12 @@
 package Core;
 import java.net.DatagramPacket;
 import java.net.SocketTimeoutException;
+
 import Actions.Client;
 import Actions.Server;
 import Actions.User;
 import StringUtils.Parsers;
+import UserInterface.ChatWindow;
 import UserInterface.Login;
 
 
@@ -115,7 +117,7 @@ public class MessageListener implements Runnable {
 					}
 					
 					
-				} else if(destType == 0){ // server response 0 succes, 1 name, 2 password
+				} else if(destType == 0){ // server response 0 success, 1 name, 2 password
 					Login loginWindow = Login.getInstance();
 					switch (Integer.parseInt(pkg.data)){
 					
@@ -123,7 +125,12 @@ public class MessageListener implements Runnable {
 						loginWindow.lblSuccess.setText("loggeandote");
 						loginWindow.lblSuccess.setText("sincronizando reloj con berkley");
 						syncClocks();
-						loginWindow.lblSuccess.setText("ya puedes loggear");
+						
+						Login.getInstance().setVisible(false);
+						
+						ChatWindow.getInstance().setVisible(true);
+						ChatWindow.getInstance().txtNickname.setText(
+								Login.getInstance().txtUser.getText().trim());
 						//success loggin in
 						//send syincClocks routine
 						break;
@@ -154,9 +161,11 @@ public class MessageListener implements Runnable {
 				if(destType == 1){ //receive request of share active users
 					Global.sendMessage(4, Server.actives(), address,0, Global.messagingSocket);
 				} else if(destType == 0){ // receive active users
+					ChatWindow.getInstance().txtIncoming.setText(
+							"Están conectados: " + pkg.data.trim() + "\n" +
+							ChatWindow.getInstance().txtIncoming.getText()
+							);
 					// pkg.data contains a concat string of the active users
-					//pkg.data
-					//
 				}
 				break;
 				
