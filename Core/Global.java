@@ -124,13 +124,26 @@ public class Global {
 	public static boolean isConnectionAlive() {
 		boolean result = false;
 		// ask the server if its alive through the discovery port
-		Global.sendMessage(
-				15, 
-				"", 
-				Global.serverIp.toString(), 
-				0, 
-				Global.discoverySocket, 
+		// don't use send message since it would be recursive
+		DataPacket p = new DataPacket();
+		p.dataType = 15;
+		p.data = "";
+		p.destType = 0;
+		p.serverIp = Global.serverIp.toString().replace("/", "");
+
+		// create a UDP packet with the data packet
+		DatagramPacket sendPacket = new DatagramPacket(
+				p.toString().getBytes(), 
+				p.toString().length(), 
+				Global.serverIp, 
 				Global.discoveryPort);
+		
+		// send the packet
+	    try {
+			Global.discoverySocket.send(sendPacket);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		// wait for confirmation of the server on the ack port
 		DatagramPacket receivePacket;
@@ -170,8 +183,7 @@ public class Global {
 		p.dataType = type;
 		p.data = data;
 		p.destType = destType;
-		p.serverIp = Global.serverIp.toString();
-		p.serverIp = p.serverIp.replace("/", "");
+		p.serverIp = Global.serverIp.toString().replace("/", "");
 		
 		DatagramPacket sendPacket = null;
 		try {
@@ -212,8 +224,7 @@ public class Global {
 		p.dataType = type;
 		p.data = data;
 		p.destType = destType;
-		p.serverIp = Global.serverIp.toString();
-		p.serverIp = p.serverIp.replace("/", "");
+		p.serverIp = Global.serverIp.toString().replace("/", "");
 		DatagramPacket sendPacket = null;
 		
 		for (User usr : Server.users) {
