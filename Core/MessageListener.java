@@ -142,8 +142,7 @@ public class MessageListener implements Runnable {
 								Login.getInstance().txtUser.getText().trim());
 						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
 						syncClocks();
-						System.out.println("-----------------acabo lo del tiempo-------------");
-						syncData();
+						
 						//success loggin in
 						//send syincClocks routine
 						break;
@@ -250,27 +249,34 @@ public class MessageListener implements Runnable {
 			case 11:
 				if(destType == 1){ //server mode (receive time and process it)
 					Server.saveDate(pkg.data,address);
+					System.out.println("me llego un tiempo");
 					if(Server.checkifLastTIme()){
 						
 						Server.berkley();
 						System.out.println("sinz and sending delta");
 						for (User usr : Server.users) {
-							if(usr.isactive)
+							if(usr.isactive){
+								System.out.println("este es mi delta: " + usr.deltatime);
 								Global.sendMessage(12, usr.deltatime+"", usr.ip, 0, Global.messagingSocket,Global.messagingPort);
+								}
 						}
 						Server.endActClock();
+						syncData();
 					}
 				}else if (destType == 0){ // Client mode (send my timestamp)
 					System.out.println("me llego peticion de tiempo");
 					String time = Client.getTime();
 					Global.sendMessage(11,time,Global.serverIp.toString(),1, Global.messagingSocket,Global.messagingPort);
+					System.out.println("conteste la peticion del tiempo");
 				}
+				break;
 				
 			//time setup	
 			case 12:
 				if(destType == 1){ //server ... do nothing
 					
 				}else if (destType == 0){ //set my delta
+					System.out.println("soy cliente y me llego mensaje");
 					for (User usr : Server.users) {
 						if(usr.isactive)
 							if(usr.ip.equals(address))
