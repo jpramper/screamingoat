@@ -19,4 +19,23 @@ public class User {
 		this.ip = this.ip.replace("/", "");
 		this.password = password;
 	}
+	User(String name, 
+			String ip, 
+			String password,
+			String timestamp,
+			String isactive,
+			String secstimestamp,
+			String deltatime,
+			String actClok
+			){
+		
+		this.nickname = name;
+		this.ip = ip;
+		this.password = password;
+		this.timestamp = timestamp;
+		this.isactive = Boolean.parseBoolean(isactive);
+		this.secstimestamp = Float.parseFloat(secstimestamp);
+		this.deltatime = Float.parseFloat(deltatime);
+		this.actClock = Boolean.parseBoolean(actClok);
+	}
 }

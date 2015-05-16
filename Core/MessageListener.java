@@ -54,6 +54,7 @@ public class MessageListener implements Runnable {
 			
 			case 1: //msg
 				if(destType == 1){ //receive msg and send it to the correct one
+					
 					String sender = "";
 					for(User usr : Server.users){
 						if(usr.isactive)
@@ -108,6 +109,7 @@ public class MessageListener implements Runnable {
 						case 0:
 							Global.sendMessage(3, "0", address,0, Global.messagingSocket,Global.messagingPort); //success loggin in
 							syncClocks();
+							syncData();
 							break;
 						case 1:
 							Global.sendMessage(3, "1", address,0, Global.messagingSocket,Global.messagingPort); //incorrect name
@@ -127,7 +129,6 @@ public class MessageListener implements Runnable {
 					case 0:
 						loginWindow.lblSuccess.setText("loggeandote");
 						loginWindow.lblSuccess.setText("sincronizando reloj con berkley");
-						syncClocks();
 						
 						Login.getInstance().setVisible(false);
 						
@@ -271,11 +272,7 @@ public class MessageListener implements Runnable {
 				if(destType == 1){ //server ... send data
 					
 				}else if (destType == 0){ //retrieve data and sinc
-					for (User usr : Server.users) {
-						//TODO!
-						if(usr.ip.equals(address))
-							usr.deltatime = Float.parseFloat(pkg.data);
-					}
+					Client.saveAndSincData(pkg.data);
 				}
 				break;
 			default:
@@ -287,6 +284,11 @@ public class MessageListener implements Runnable {
 	public String syncClocks(){
 		Global.sendBroadcast(11,"",0,"", Global.messagingSocket);
 		return "";
+	}
+	
+	public void syncData(){
+		String AllData = Server.collectToSincData();
+		Global.sendBroadcast(13, AllData, 0, "", Global.messagingSocket);
 	}
 	
 }

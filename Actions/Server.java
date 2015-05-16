@@ -200,21 +200,33 @@ public class Server {
 	public static String[] privateMessage(String data){
 		String[] datas = new String[2];
 		datas = Parsers.parsePrivateMessage(data);
-		datas[0].replaceAll("@", "");
 		//get destinatarium
 		//write mssg
 		return datas;
 		
 	}
 	
-	public static String sincData(){
+	public static String collectToSincData(){
 		String fullData = "";
+		String userInfo = "";
+		int i = 0;
 		
 		for (User usr : users) {
-			//TODO
-			//actives = actives.concat(usr.nickname + ",");
+			userInfo = "";
+			userInfo = userInfo.concat(usr.nickname+",");
+			userInfo = userInfo.concat(usr.ip+",");
+			userInfo = userInfo.concat(usr.password+",");
+			userInfo = userInfo.concat(usr.timestamp+",");
+			userInfo = userInfo.concat(usr.actClock+",");
+			userInfo = userInfo.concat(usr.deltatime+",");
+			userInfo = userInfo.concat(usr.isactive+",");
+			userInfo = userInfo.concat(usr.secstimestamp+"~");
+			fullData = fullData.concat(userInfo);
+			i++;
 		}
-		
+		String iData = i+"";
+		iData = iData.concat("-"+fullData);
+		fullData = iData;
 		return fullData;
 	}
 }
