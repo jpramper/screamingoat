@@ -141,7 +141,8 @@ public class MessageListener implements Runnable {
 						ChatWindow.getInstance().txtNickname.setText(
 								Login.getInstance().txtUser.getText().trim());
 						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
-						//syncClocks();
+						syncClocks();
+						System.out.println("-----------------acabo lo del tiempo-------------");
 						syncData();
 						//success loggin in
 						//send syincClocks routine
@@ -199,6 +200,8 @@ public class MessageListener implements Runnable {
 			case 7:
 				Server.removeActiveUser(address);
 				Global.sendMessage(6, "", address,0, Global.messagingSocket,Global.messagingPort);
+				syncData();
+				//aqui cerrar la ventana
 				break;
 				
 			//error	
@@ -258,6 +261,7 @@ public class MessageListener implements Runnable {
 						Server.endActClock();
 					}
 				}else if (destType == 0){ // Client mode (send my timestamp)
+					System.out.println("me llego peticion de tiempo");
 					String time = Client.getTime();
 					Global.sendMessage(11,time,Global.serverIp.toString(),1, Global.messagingSocket,Global.messagingPort);
 				}
@@ -276,7 +280,7 @@ public class MessageListener implements Runnable {
 				break;
 				
 			//zinc mssgs	
-			case 13:
+			case 16:
 				if(destType == 1){ //server ... send data
 					
 				}else if (destType == 0){ //retrieve data and sinc
@@ -296,7 +300,7 @@ public class MessageListener implements Runnable {
 	
 	public void syncData(){
 		String AllData = Server.collectToSincData();
-		Global.sendBroadcast(13, AllData, 0, "", Global.messagingSocket);
+		Global.sendBroadcast(16, AllData, 0, "", Global.messagingSocket);
 	}
 	
 }
