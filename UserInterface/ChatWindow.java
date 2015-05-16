@@ -19,6 +19,8 @@ import Core.Global;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JCheckBox;
+
 /**
  * Presents an interface to the user to interact with the chat program.
  * 
@@ -50,6 +52,14 @@ public class ChatWindow extends JFrame {
 	private JMenuItem mntmJuego;
 	private JMenuItem mntmQuienEsta;
 	private JMenuItem mntmCerrarSesin;
+	public JCheckBox chkIsServer;
+	
+	public static void init() {
+		ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
+		ChatWindow.getInstance().chkIsServer.setSelected(false);
+		ChatWindow.getInstance().txtIncoming.setText("");
+		ChatWindow.getInstance().txtOutgoing.setText("");
+	}
 	
 	public void sendMessage() {
 		// mando al servidor, tipo 10, username~password
@@ -107,7 +117,20 @@ public class ChatWindow extends JFrame {
 	}
 	
 	public void logout() {
+		// mando al servidor, tipo 10, username~password
+		Global.sendMessage(
+				7, 
+				"", 
+				Global.serverIp.toString(), 
+				1, 
+				Global.messagingSocket,
+				Global.messagingPort);
 		
+		ChatWindow.init();
+		ChatWindow.getInstance().setVisible(false);
+		
+		Login.init();
+		Login.getInstance().setVisible(true);
 	}
 	
 	private ChatWindow() {
@@ -200,5 +223,10 @@ public class ChatWindow extends JFrame {
 		contentPane.add(lblEscribaAqui);
 		
 		getRootPane().setDefaultButton(btnEnviar);
+		
+		chkIsServer = new JCheckBox("");
+		chkIsServer.setBounds(502, 12, 23, 23);
+		chkIsServer.setEnabled(false);
+		contentPane.add(chkIsServer);
 	}
 }

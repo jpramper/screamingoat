@@ -32,6 +32,15 @@ public class Login extends JFrame {
 	public JLabel lblError;
 	public JLabel lblSuccess;
 	
+	public static void init() {
+		Login.getInstance().txtUser.setText("");
+		Login.getInstance().txtPass.setText("");
+		Login.getInstance().lblError.setText("");
+		Login.getInstance().lblSuccess.setText("");
+		
+		Login.getInstance().txtUser.requestFocusInWindow();
+	}
+	
 	public void signIn() {
 		lblError.setText("");
 		lblSuccess.setText("");
