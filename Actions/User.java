@@ -6,12 +6,12 @@ public class User {
 	public String nickname;
 	public String ip;
 	public String password;
-	public String timestamp;
+	public String timestamp; //mark of time  hh:mm:ss
 	public boolean isactive;
-	public float secstimestamp;
-	public float deltatime;
+	public float secstimestamp; //mark of time in seconds
+	public float deltatime; //diff time
 	public boolean actClock;
-	public static ArrayList<String> banneds = new ArrayList<String>();
+	public ArrayList<String> banneds = new ArrayList<String>();
 	
 	User(String name, String ip, String password){
 		nickname = name;

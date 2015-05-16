@@ -1,11 +1,14 @@
 package Actions;
 
 import java.text.DateFormat;
+import Actions.Server;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Client {
+	public static String nickname = "";
 	
 	public static String getTime(){
 		
@@ -34,6 +37,20 @@ public class Client {
 		}
 		Server.users = Newusers;
 		
+	}
+	
+	public static String displayClientTime(){
+		String time = "aaaaaaaaaaaaaaaaaaaaaaaa";
+		float secs = 0;
+		for(User usr: Server.users){
+			if(usr.nickname.equals(nickname)){
+				secs = usr.secstimestamp + usr.deltatime;
+			}
+		}
+		System.out.println("estos son mis segundos: " + secs);
+		time = Server.secsToTime(secs);
+		System.out.println("ola k ase ----------" + time);
+		return time;
 	}
 
 }

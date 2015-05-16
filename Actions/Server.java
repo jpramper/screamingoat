@@ -142,6 +142,7 @@ public class Server {
 		
 		secs /= 60; //get minutes
 		secs /= 60; //get hours
+		System.out.println("resultado en hrs " + secs);
 		
 		int[] promtime = new int[3]; 
 		
@@ -159,7 +160,7 @@ public class Server {
 		
 		promtime[2] = (int)secs;
 		String Stime = "";
-		Stime.concat(promtime[2]+":"+promtime[1]+":"+promtime[0]);
+		Stime = Stime.concat(promtime[0]+":"+promtime[1]+":"+promtime[2] + " ");
 		return Stime;
 	}
 	
@@ -173,13 +174,38 @@ public class Server {
 		return true;
 	}
 	
-	public static void banPerson(String nickname, String address){
+	public static String banPerson(String nickname, String address){
 		for (User usr : users) {
 			if (usr.isactive)
 				if(usr.ip.equals(address)){
-					User.banneds.add(nickname);
+					for(User usr2 : users){
+						if(usr2.nickname.equals(nickname)){
+							usr.banneds.add(nickname);
+							return nickname;
+						}
+					}
+					//no existand user
+					return null;
 				}
 		}
+		return nickname;
+	}
+	
+	public static String unbanPerson(String nickname, String address){
+		for (User usr : users) {
+			if (usr.isactive)
+				if(usr.ip.equals(address)){
+					for(User usr2 : users){
+						if(usr2.nickname.equals(nickname)){
+							usr.banneds.remove(nickname);
+							return nickname;
+						}
+					}
+					//no existand user
+					return null;
+				}
+		}
+		return nickname;
 	}
 	
 	public static String returnPerson(String name, String sender){
@@ -188,7 +214,7 @@ public class Server {
 		for (User usr : users) {
 			if(usr.isactive)
 				if(usr.nickname.equals(name)){
-					if(User.banneds.contains(sender)){
+					if(usr.banneds.contains(sender)){
 						return "banned";
 					}
 					return usr.ip;

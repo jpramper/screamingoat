@@ -76,7 +76,7 @@ public class MessageListener implements Runnable {
 					}
 					
 				} else if(destType == 0){ // you got mail.!!
-					ChatWindow.getInstance().txtIncoming.setText(
+					ChatWindow.getInstance().txtIncoming.setText( Client.displayClientTime() +
 							pkg.data.trim() + "\n" +
 							ChatWindow.getInstance().txtIncoming.getText()
 							);
@@ -97,7 +97,7 @@ public class MessageListener implements Runnable {
 					
 					
 				} else if(destType == 0){ // you got a public mail.
-					ChatWindow.getInstance().txtIncoming.setText(
+					ChatWindow.getInstance().txtIncoming.setText( Client.displayClientTime() + 
 							pkg.data.trim() + "\n" +
 							ChatWindow.getInstance().txtIncoming.getText()
 							);
@@ -140,7 +140,9 @@ public class MessageListener implements Runnable {
 						ChatWindow.getInstance().setVisible(true);
 						ChatWindow.getInstance().txtNickname.setText(
 								Login.getInstance().txtUser.getText().trim());
+						Client.nickname = Login.getInstance().txtUser.getText().trim();
 						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
+						
 						syncClocks();
 						
 						//success loggin in
@@ -185,14 +187,44 @@ public class MessageListener implements Runnable {
 			//bann list?	data = nickname of the banned
 			case 5:
 				if(destType == 1){ //receive request to bann a person
-					Server.banPerson(pkg.data ,address);
+					String person = Server.banPerson(pkg.data ,address);
+					Global.sendMessage(5, person, address, 0, Global.messagingSocket, Global.messagingPort);
+					
 				} else if(destType == 0){ // ... do nothing
+					if(!pkg.data.equals("null")){
+						ChatWindow.getInstance().txtIncoming.setText(
+								pkg.data.trim() + "was banned \n" +
+								ChatWindow.getInstance().txtIncoming.getText()
+								);
+					}else{
+						ChatWindow.getInstance().txtIncoming.setText(
+								"cannot bann an unexistand person \n" +
+								ChatWindow.getInstance().txtIncoming.getText()
+								);
+					}
 					
 				}
 				break;
 				
-			//ack	
+			//unbann	
 			case 6:
+				if(destType == 1){ //receive request to unbann a person
+					String person = Server.unbanPerson(pkg.data ,address);
+					Global.sendMessage(6, person, address, 0, Global.messagingSocket, Global.messagingPort);
+				} else if(destType == 0){ // ... do nothing
+					if(!pkg.data.equals("null")){
+					ChatWindow.getInstance().txtIncoming.setText(
+							pkg.data.trim() + " was unbanned \n" +
+							ChatWindow.getInstance().txtIncoming.getText()
+							);
+					}else{
+					ChatWindow.getInstance().txtIncoming.setText(
+							"canntot unbann an unexistand person\n" +
+							ChatWindow.getInstance().txtIncoming.getText()
+							);
+					}
+					
+				}
 				break;
 				
 			//exit	

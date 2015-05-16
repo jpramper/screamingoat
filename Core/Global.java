@@ -230,7 +230,7 @@ public class Global {
 		
 		for (User usr : Server.users) {
 			if(usr.isactive){
-				if(User.banneds.contains(sender)) continue; //skip banned persons
+				if(usr.banneds.contains(sender)) continue; //skip banned persons
 				
 				sendPacket = null;
 				

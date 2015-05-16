@@ -68,8 +68,7 @@ public class ChatWindow extends JFrame {
 		
 		if (message.equals("")) return;
 		
-		if (message.startsWith("@"))
-		{
+		if (message.startsWith("@")){
 			// private message
 			if (!message.contains(" ")) return;
 			
@@ -80,6 +79,14 @@ public class ChatWindow extends JFrame {
 			message = user + "~" + message;
 			
 			messageType = 1; // set type to private
+		}else if (message.startsWith("#")){
+			//mute User
+			message = message.replace("#", "");
+			messageType = 5;
+		}else if (message.startsWith("%")){
+			//unmute User
+			message = message.replace("%", "");
+			messageType = 6;
 		}
 		
 		Global.sendMessage(
@@ -114,6 +121,16 @@ public class ChatWindow extends JFrame {
 	
 	public void sendFile() {
 		
+	}
+	
+	public void muteUser(){
+		Global.sendMessage(
+				5, 
+				"", 
+				Global.serverIp.toString(), 
+				1, 
+				Global.messagingSocket,
+				Global.messagingPort);
 	}
 	
 	public void logout() {
