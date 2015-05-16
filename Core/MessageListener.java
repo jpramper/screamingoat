@@ -135,6 +135,10 @@ public class MessageListener implements Runnable {
 						loginWindow.lblError.setText("mmm... ese no es tu passbordio");
 						//incorrect password
 						break;
+					case 3:
+						loginWindow.lblError.setText("user already logged in (osea... no puedes 2 veces)");
+						//incorrect password
+						break;
 						
 					default:
 						break;

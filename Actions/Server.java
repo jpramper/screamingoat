@@ -42,6 +42,7 @@ public class Server {
 				System.out.println("encontre el nombre");
 				System.out.println("voy a buscar:" + usr.password);
 				if(usr.password.equals(password)) {
+					if(active.contains(usr)) return 3; //skip if already logged in
 					active.add(usr); //add user to actives
 					System.out.println("los usuarios estan activos: ");
 					for (User usr2 : active) {
