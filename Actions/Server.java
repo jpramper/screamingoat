@@ -290,13 +290,14 @@ public class Server {
 	}
 	
 	public static void addPending(int id, String ip, String message){
+		System.out.println("guardando pending message");
 		String user = Server.returnPersonfromIp(ip);
 		Pendings p = new Pendings(id,user,message);
 		pendings.add(p);
 	}
 	
 	public static void removePending(int id){
-		
+		System.out.println("ya se entrego un mensaje ("+id+")");
 		for(Pendings p : pendings){
 			if (p.id == id){
 				pendings.remove(p);

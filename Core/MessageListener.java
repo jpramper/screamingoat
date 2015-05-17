@@ -78,6 +78,7 @@ public class MessageListener implements Runnable {
 						Global.sendMessage(1, "Bravo!! muy inteligente mandarte un mensaje a ti mismo,\n ya te sientes menos solo ?", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						// el mismo usuario.
 					}else if(person.equals("1")){
+						Global.sendMessage(1, "el usuario esta offline, cuando entre le llegara tu mensaje", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						Server.addPending(Global.getNextPendingid(), person, sender+": " + pkg.data);
 						// usuario offline save message
 					}else{
@@ -153,6 +154,7 @@ public class MessageListener implements Runnable {
 						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
 
 						//retrieve messages
+						System.out.println("pidiendo mensajes de: " + Login.getInstance().txtUser.getText());
 						Global.sendMessage(17, Login.getInstance().txtUser.getText(), Global.serverIp.toString(), 1, Global.messagingSocket, Global.messagingPort);
 						
 						syncClocks();
