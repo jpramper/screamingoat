@@ -79,7 +79,7 @@ public class MessageListener implements Runnable {
 						// el mismo usuario.
 					}else if(person.equals("1")){
 						Global.sendMessage(1, "el usuario esta offline, cuando entre le llegara tu mensaje", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
-						Server.addPending(Global.getNextPendingid(), person, sender+": " + pkg.data);
+						Server.addPending(Global.getNextPendingid(), Server.returnIp(datas[0]), sender+": " + pkg.data);
 						// usuario offline save message
 					}else{
 						Global.sendMessage(1, sender+": " + datas[1], person, 0, Global.messagingSocket,Global.messagingPort);

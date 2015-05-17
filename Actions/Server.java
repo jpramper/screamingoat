@@ -291,9 +291,13 @@ public class Server {
 	
 	public static void addPending(int id, String ip, String message){
 		System.out.println("guardando pending message");
+		System.out.println(id+","+ip+","+message);
 		String user = Server.returnPersonfromIp(ip);
 		Pendings p = new Pendings(id,user,message);
 		pendings.add(p);
+		for(Pendings r : Server.pendings){
+			System.out.println(r.towho + ", "+ r.message);
+		}
 	}
 	
 	public static void removePending(int id){
