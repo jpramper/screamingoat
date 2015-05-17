@@ -224,10 +224,15 @@ public class Server {
 	public static String returnPerson(String name, String sender){
 		
 		if(sender.equals(name)) return "3";
+		
+		System.out.println("busco a :" + name);
+		
 		for (User usr : users) {
+				System.out.println("estoy en: " + usr.nickname + "y busco a: " + name);
 				if(usr.nickname.equals(name)){
 					if(usr.isactive){
 						if(usr.banneds.contains(sender)){
+							//usuario banneado
 							return "0";
 						}
 						return usr.ip;

@@ -67,16 +67,16 @@ public class MessageListener implements Runnable {
 					datas = Server.privateMessage(pkg.data);
 					
 					String person = Server.returnPerson(datas[0], sender);
-					if( Integer.parseInt(person) == 2){
+					if( pkg.data.equals("2")){
 						Global.sendMessage(1, "el usuario no existe", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						//no existe
-					}else if (Integer.parseInt(person) == 0){
+					}else if (pkg.data.equals("0")){
 						Global.sendMessage(1, "uuuuhhh te bloquearon tss eso duele", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						// usuario bloqueado.
-					}else if (Integer.parseInt(person) == 3){
+					}else if (pkg.data.equals("3")){
 						Global.sendMessage(1, "Bravo!! muy inteligente mandarte un mensaje a ti mismo,\n ya te sientes menos solo ?", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						// el mismo usuario.
-					}else if(Integer.parseInt(person) == 1){
+					}else if(pkg.data.equals("1")){
 						Server.addPending(Global.getNextPendingid(), person, sender+": " + pkg.data);
 						// usuario offline save message
 					}else{
@@ -150,8 +150,9 @@ public class MessageListener implements Runnable {
 								Login.getInstance().txtUser.getText().trim());
 						Client.nickname = Login.getInstance().txtUser.getText().trim();
 						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
-						
-						Global.sendMessage(17, ChatWindow.getInstance().txtNickname.toString(), Global.serverIp.toString(), 1, Global.messagingSocket, Global.messagingPort);
+
+						//retrieve messages
+						Global.sendMessage(17, Login.getInstance().txtUser.getText(), Global.serverIp.toString(), 1, Global.messagingSocket, Global.messagingPort);
 						
 						syncClocks();
 						
