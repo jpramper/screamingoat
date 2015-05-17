@@ -21,9 +21,11 @@ public class Client {
 	
 	public static void saveAndSincData(String allData){
 		ArrayList<User> Newusers = new ArrayList<User>();
+		System.out.println("ALL DATA");
+		System.out.println(allData);
 		
 		String[] dta = new String[2];
-		dta = allData.split("-");
+		dta = allData.split("%");
 		//dta[0] -> numero de usuarios
 		//dta[1] -> usuarios
 		
@@ -32,6 +34,7 @@ public class Client {
 		for(int i = 0; i < Integer.parseInt(dta[0]); i++){
 			String[] info = new String[8];
 			info = usuarios[i].split(",");
+			System.out.println("estoy hay en 6 " + info[6]);
 			User u = new User(info[0], info[1], info[2],info[3],info[4],info[5],info[6],info[7]);
 			Newusers.add(u);
 		}

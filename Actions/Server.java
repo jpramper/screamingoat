@@ -284,7 +284,7 @@ public class Server {
 			i++;
 		}
 		String iData = i+"";
-		iData = iData.concat("-"+fullData);
+		iData = iData.concat("%"+fullData);
 		fullData = iData;
 		return fullData;
 	}
