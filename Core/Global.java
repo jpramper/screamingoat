@@ -43,6 +43,8 @@ public class Global {
 	public static DatagramSocket ackSocket = null;
 	public static DatagramSocket messagingSocket = null;
 	
+	public static int id = 0;
+	
 	/**
 	 * Dedicated to listen to "who listens?" network broadcasts of new clients.
 	 * (while(true) listener, occasional sender)
@@ -339,6 +341,12 @@ public class Global {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static int getNextPendingid(){
+		int myid = id;
+		id++;
+		return myid;
 	}
 
 }

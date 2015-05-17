@@ -67,10 +67,18 @@ public class MessageListener implements Runnable {
 					datas = Server.privateMessage(pkg.data);
 					
 					String person = Server.returnPerson(datas[0], sender);
-					if( person == null){
+					if( Integer.parseInt(person) == 2){
+						Global.sendMessage(1, "el usuario no existe", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						//no existe
-					}else if (person.equals("banned")){
+					}else if (Integer.parseInt(person) == 0){
+						Global.sendMessage(1, "uuuuhhh te bloquearon tss eso duele", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						// usuario bloqueado.
+					}else if (Integer.parseInt(person) == 3){
+						Global.sendMessage(1, "Bravo!! muy inteligente mandarte un mensaje a ti mismo,\n ya te sientes menos solo ?", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
+						// el mismo usuario.
+					}else if(Integer.parseInt(person) == 1){
+						Server.addPending(Global.getNextPendingid(), person, sender+": " + pkg.data);
+						// usuario offline save message
 					}else{
 						Global.sendMessage(1, sender+": " + datas[1], person, 0, Global.messagingSocket,Global.messagingPort);
 					}
@@ -143,10 +151,13 @@ public class MessageListener implements Runnable {
 						Client.nickname = Login.getInstance().txtUser.getText().trim();
 						ChatWindow.getInstance().txtOutgoing.requestFocusInWindow();
 						
+						Global.sendMessage(17, ChatWindow.getInstance().txtNickname.toString(), Global.serverIp.toString(), 1, Global.messagingSocket, Global.messagingPort);
+						
 						syncClocks();
 						
 						//success loggin in
 						//send syincClocks routine
+						// 
 						break;
 					case 1:
 						loginWindow.lblError.setText("compilla... la cagaste con el nombre");
@@ -325,8 +336,33 @@ public class MessageListener implements Runnable {
 					Client.saveAndSincData(pkg.data);
 				}
 				break;
+				
+			//retrieve pending messages	
+			case 17:
+				if(destType == 1){ //search for pending messages
+					Server.revireveMessages(pkg.data);
+				}else if (destType == 0){ //retrieve data and sinc
+					//print messages
+					if(pkg.data.equals("no pendings messages")){
+						ChatWindow.getInstance().txtIncoming.setText(
+								"no pending messages \n" +
+								ChatWindow.getInstance().txtIncoming.getText()
+								);
+					}else{
+						ChatWindow.getInstance().txtIncoming.setText(
+								pkg.data + " \n" +
+								ChatWindow.getInstance().txtIncoming.getText()
+								);
+					}
+					
+					
+				}
+				break;
+				
+				
 			default:
 				break;
+				
 		
 		}
 	}

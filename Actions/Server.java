@@ -1,10 +1,13 @@
 package Actions;
 
+import Core.Global;
 import StringUtils.Parsers;
+
 import java.util.ArrayList;
 
 public class Server {
 	public static ArrayList<User> users = new ArrayList<User>();
+	public static ArrayList<Pendings> pendings = new ArrayList<Pendings>();
 	
 	static boolean addUser() {
 		
@@ -208,19 +211,46 @@ public class Server {
 		return nickname;
 	}
 	
+	public static String returnPersonfromIp(String ip){
+		String name = "";
+		for(User usr: users){
+			if(usr.ip.equals(ip)){
+				name = usr.nickname;
+			}
+		}
+		return name;
+	}
+	
 	public static String returnPerson(String name, String sender){
 		
-		
+		if(sender.equals(name)) return "3";
 		for (User usr : users) {
-			if(usr.isactive)
 				if(usr.nickname.equals(name)){
-					if(usr.banneds.contains(sender)){
-						return "banned";
+					if(usr.isactive){
+						if(usr.banneds.contains(sender)){
+							return "0";
+						}
+						return usr.ip;
+					}else{
+						//el usuario esta inactivo
+						return "1";
 					}
-					return usr.ip;
+				}else{
+					//el usuario no existe
+					return "2";
 				}
 		}
 		return null;
+	}
+	
+	public static String returnIp(String name){
+		String ip = "";
+		for(User usr: users){
+			if(usr.nickname.equals(name)){
+				ip = usr.ip;
+			}
+		}
+		return ip;
 	}
 	
 	public static String[] privateMessage(String data){
@@ -254,5 +284,31 @@ public class Server {
 		iData = iData.concat("-"+fullData);
 		fullData = iData;
 		return fullData;
+	}
+	
+	public static void addPending(int id, String ip, String message){
+		String user = Server.returnPersonfromIp(ip);
+		Pendings p = new Pendings(id,user,message);
+		pendings.add(p);
+	}
+	
+	public static void removePending(int id){
+		
+		for(Pendings p : pendings){
+			if (p.id == id){
+				pendings.remove(p);
+			}
+		}
+	}
+	
+	public static void revireveMessages(String name){
+		for(Pendings p : Server.pendings){
+			if(p.towho.equals(name)){
+				//send message
+				Global.sendMessage(17, p.message, Server.returnIp(name), 0, Global.messagingSocket, Global.messagingPort);
+				Server.pendings.remove(p);
+			}
+		}
+		Global.sendMessage(17, "no pendings messages", Server.returnIp(name), 0, Global.messagingSocket, Global.messagingPort);
 	}
 }

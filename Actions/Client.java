@@ -40,7 +40,7 @@ public class Client {
 	}
 	
 	public static String displayClientTime(){
-		String time = "aaaaaaaaaaaaaaaaaaaaaaaa";
+		String time = "";
 		float secs = 0;
 		for(User usr: Server.users){
 			if(usr.nickname.equals(nickname)){
