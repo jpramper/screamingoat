@@ -112,7 +112,8 @@ public class ChatWindow extends JFrame {
 	}
 	
 	public void climateCheck() {
-		
+		Climate cw = new Climate();
+		cw.setVisible(true);
 	}
 	
 	public void launchGame() {
@@ -245,5 +246,12 @@ public class ChatWindow extends JFrame {
 		chkIsServer.setBounds(502, 12, 23, 23);
 		chkIsServer.setEnabled(false);
 		contentPane.add(chkIsServer);
+		
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        logout();
+		    }
+		});
 	}
 }
