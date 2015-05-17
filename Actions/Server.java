@@ -240,12 +240,10 @@ public class Server {
 						//el usuario esta inactivo
 						return "1";
 					}
-				}else{
-					//el usuario no existe
-					return "2";
 				}
 		}
-		return null;
+		//el usuario no existe
+		return "2";
 	}
 	
 	public static String returnIp(String name){
