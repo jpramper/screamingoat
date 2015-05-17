@@ -1,11 +1,14 @@
 package Actions;
 
 import java.text.DateFormat;
+
 import Actions.Server;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import StringUtils.Parsers;
 
 public class Client {
 	public static String nickname = "";
@@ -17,6 +20,28 @@ public class Client {
 		String Sdate = dateFormat.format(date);
 		
 		return Sdate;
+	}
+	
+	public static void reTimeStamp(String name){
+		Date date = new Date();
+		String[] dta = new String[2];
+		float secs = 0;
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		String Sdate = dateFormat.format(date);
+		secs = 0;
+		dta = Parsers.parseTime(Sdate);
+		secs = Integer.parseInt(dta[0]) * 60;
+		secs = secs + Integer.parseInt(dta[1]);
+		secs *= 60;
+		secs += Integer.parseInt(dta[2]);
+		
+		
+		for(User usr: Server.users){
+			if(usr.nickname.equals(name))
+			usr.secstimestamp = secs;
+		}
+		
+		
 	}
 	
 	public static void saveAndSincData(String allData){
@@ -47,6 +72,7 @@ public class Client {
 		float secs = 0;
 		for(User usr: Server.users){
 			if(usr.nickname.equals(nickname)){
+				reTimeStamp(nickname);
 				secs = usr.secstimestamp + usr.deltatime;
 			}
 		}
