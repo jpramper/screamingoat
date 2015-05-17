@@ -314,8 +314,10 @@ public class Server {
 		for(Pendings p : Server.pendings){
 			if(p.towho.equals(name)){
 				//send message
-				Global.sendMessage(17, p.message, Server.returnIp(name), 0, Global.messagingSocket, Global.messagingPort);
-				Server.pendings.remove(p);
+				if(!p.sent){
+					Global.sendMessage(17, p.message, Server.returnIp(name), 0, Global.messagingSocket, Global.messagingPort);
+					p.sent = true;
+				}
 			}
 		}
 		Global.sendMessage(17, "no pendings messages", Server.returnIp(name), 0, Global.messagingSocket, Global.messagingPort);

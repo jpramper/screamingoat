@@ -49,7 +49,6 @@ public class Client {
 		}
 		System.out.println("estos son mis segundos: " + secs);
 		time = Server.secsToTime(secs);
-		System.out.println("ola k ase ----------" + time);
 		return time;
 	}
 

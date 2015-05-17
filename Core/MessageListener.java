@@ -157,6 +157,7 @@ public class MessageListener implements Runnable {
 						System.out.println("pidiendo mensajes de: " + Login.getInstance().txtUser.getText());
 						Global.sendMessage(17, Login.getInstance().txtUser.getText(), Global.serverIp.toString(), 1, Global.messagingSocket, Global.messagingPort);
 						
+						System.out.println("ya que me logge voy a sincronizar el tiempo");
 						syncClocks();
 						
 						//success loggin in
@@ -321,6 +322,7 @@ public class MessageListener implements Runnable {
 			//time setup	
 			case 12:
 				if(destType == 1){ //server ... do nothing
+					Global.sendBroadcast(11, "", 0, "", Global.messagingSocket);
 					
 				}else if (destType == 0){ //set my delta
 					System.out.println("soy cliente y me llego mensaje");
@@ -371,7 +373,8 @@ public class MessageListener implements Runnable {
 	}
 	
 	public String syncClocks(){
-		Global.sendBroadcast(11,"",0,"", Global.messagingSocket);
+		System.out.println("brodcasteando para mandar a sincronizar el tiempo");
+		Global.sendMessage(12,"",Global.serverIp.toString(),1, Global.messagingSocket,Global.messagingPort);
 		return "";
 	}
 	
