@@ -306,6 +306,7 @@ public class Server {
 	}
 	
 	public static void revireveMessages(String name){
+		System.out.println("retriveando mensajes de: " + name);
 		for(Pendings p : Server.pendings){
 			if(p.towho.equals(name)){
 				//send message

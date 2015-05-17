@@ -344,6 +344,7 @@ public class MessageListener implements Runnable {
 			//retrieve pending messages	
 			case 17:
 				if(destType == 1){ //search for pending messages
+					System.out.println("seguimos pidiendo mensajes de :" + pkg.data);
 					Server.revireveMessages(pkg.data);
 				}else if (destType == 0){ //retrieve data and sinc
 					//print messages
@@ -358,8 +359,6 @@ public class MessageListener implements Runnable {
 								ChatWindow.getInstance().txtIncoming.getText()
 								);
 					}
-					
-					
 				}
 				break;
 				
