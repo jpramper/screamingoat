@@ -67,16 +67,17 @@ public class MessageListener implements Runnable {
 					datas = Server.privateMessage(pkg.data);
 					
 					String person = Server.returnPerson(datas[0], sender);
-					if( pkg.data.equals("2")){
+					System.out.println("el resultado de person es: " + person);
+					if( person.equals("2")){
 						Global.sendMessage(1, "el usuario no existe", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						//no existe
-					}else if (pkg.data.equals("0")){
+					}else if (person.equals("0")){
 						Global.sendMessage(1, "uuuuhhh te bloquearon tss eso duele", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						// usuario bloqueado.
-					}else if (pkg.data.equals("3")){
+					}else if (person.equals("3")){
 						Global.sendMessage(1, "Bravo!! muy inteligente mandarte un mensaje a ti mismo,\n ya te sientes menos solo ?", Server.returnIp(sender), 0, Global.messagingSocket, Global.messagingPort);
 						// el mismo usuario.
-					}else if(pkg.data.equals("1")){
+					}else if(person.equals("1")){
 						Server.addPending(Global.getNextPendingid(), person, sender+": " + pkg.data);
 						// usuario offline save message
 					}else{
