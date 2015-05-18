@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import Actions.Client;
 import Core.Global;
 
 import java.awt.event.MouseAdapter;
@@ -121,6 +122,7 @@ public class ChatWindow extends JFrame {
 	}
 	
 	public void sendFile() {
+		//Client.sendFile();
 		
 	}
 	

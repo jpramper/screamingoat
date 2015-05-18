@@ -364,6 +364,15 @@ public class MessageListener implements Runnable {
 				}
 				break;
 				
+			//files
+			case 18:
+				if(destType == 1){ //store file and send it
+					
+				}else if (destType == 0){ //got file
+					
+				}
+				break;
+				
 				
 			default:
 				break;

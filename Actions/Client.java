@@ -1,13 +1,19 @@
 package Actions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
-
-import Actions.Server;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Core.Global;
+import Files.FileEvent;
+import Files.FileGoat;
 import StringUtils.Parsers;
 
 public class Client {
@@ -79,6 +85,35 @@ public class Client {
 		System.out.println("estos son mis segundos: " + secs);
 		time = Server.secsToTime(secs);
 		return time;
+	}
+	
+	public static String sendFile(String ndestiny){
+		FileEvent event = null;
+		String ipdest = Server.returnIp("/home/cury/Desktop/Heuristica");
+		
+		try {
+			event = FileGoat.getFileEvent(ndestiny);
+			
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			ObjectOutputStream os = new ObjectOutputStream(outputStream);
+			os.writeObject(event);
+			byte[] data = outputStream.toByteArray();
+			
+			Global.sendMessage(18, data.toString(), ipdest, 0, Global.messagingSocket, Global.messagingPort);
+			
+		}catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+		return "";
+	}
+	
+	public static void sendFile(){
+		
 	}
 
 }
